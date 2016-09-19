@@ -2,7 +2,14 @@ import { ActionType } from 'actions'
 import firebase from 'firebase'
 import xs from 'xstream'
 
-export function makeFirebaseDriver (config) {
+export interface Config {
+  apiKey: string
+  authDomain: string
+  databaseURL: string
+  storageBucket: string
+}
+
+export function makeFirebaseDriver (config: Config) {
   const app = firebase.initializeApp(config)
   const auth = app.auth()
   const database = app.database()

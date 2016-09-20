@@ -47,7 +47,7 @@ export const firebaseActions = {
   signOut: () => ({
     type: ActionType.SignOut
   }),
-  transaction: (path: string, updateFn: (any => any)) => ({
+  transaction: (path: string, updateFn: (value: any) => any) => ({
     path,
     type: ActionType.Transaction,
     updateFn

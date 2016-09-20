@@ -2,8 +2,13 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "lib/",
+    "preserveConstEnums": true,
+    "sourceMap": true,
     "target": "es5"
   },
+  "exclude": [
+    "node_modules"
+  ],
   "files": [
     "src/index.ts",
     "typings/index.d.ts"

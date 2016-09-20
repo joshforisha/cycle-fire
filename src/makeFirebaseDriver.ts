@@ -1,5 +1,5 @@
 import { ActionType } from 'actions'
-import firebase from 'firebase'
+import { initializeApp } from 'firebase'
 import xs from 'xstream'
 
 export interface Config {
@@ -10,14 +10,14 @@ export interface Config {
 }
 
 export function makeFirebaseDriver (config: Config) {
-  const app = firebase.initializeApp(config)
+  const app = initializeApp(config)
   const auth = app.auth()
   const database = app.database()
 
   return output$ => ({
     currentUser: xs.create({
       start: listener => {
-        firebase.auth().onAuthStateChanged(user => {
+        app.auth().onAuthStateChanged(user => {
           listener.next(user)
         })
       },

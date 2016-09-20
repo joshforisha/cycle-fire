@@ -19,7 +19,7 @@ export const firebaseActions = {
   createUserWithEmailAndPassword: (email: string, password: string) => ({
     email,
     password,
-    type: ActionType.CreateUser
+    type: ActionType.CreateUserWithEmailAndPassword
   }),
   set: (path: string, value: string) => ({
     path,
@@ -29,7 +29,7 @@ export const firebaseActions = {
   signInWithEmailAndPassword: (email: string, password: string) => ({
     email,
     password,
-    type: ActionType.SignIn
+    type: ActionType.SignInWithEmailAndPassword
   }),
   signOut: () => ({
     type: ActionType.SignOut

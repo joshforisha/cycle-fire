@@ -3,9 +3,12 @@ import { initializeApp } from 'firebase'
 
 enum ActionType {
   CreateUserWithEmailAndPassword,
+  Push,
+  Remove,
   Set,
   SignInWithEmailAndPassword,
-  SignOut
+  SignOut,
+  Update
 }
 
 interface Config {
@@ -21,10 +24,19 @@ export const firebaseActions = {
     password,
     type: ActionType.CreateUserWithEmailAndPassword
   }),
-  set: (path: string, value: string) => ({
+  push: (path: string, values: any) => ({
+    path,
+    type: ActionType.Push,
+    values
+  }),
+  remove: (path: string) => ({
+    type: ActionType.Remove,
+    path
+  }),
+  set: (path: string, values: any) => ({
     path,
     type: ActionType.Set,
-    value
+    values
   }),
   signInWithEmailAndPassword: (email: string, password: string) => ({
     email,
@@ -33,6 +45,11 @@ export const firebaseActions = {
   }),
   signOut: () => ({
     type: ActionType.SignOut
+  }),
+  update: (path: string, values: any) => ({
+    path,
+    type: ActionType.Update,
+    values
   })
 }
 
@@ -61,8 +78,14 @@ export function makeFirebaseDriver (options: Config, name: string) {
                 auth.createUserWithEmailAndPassword(action.email, action.password)
                   .catch(err => listener.next(err))
                 break
+              case ActionType.Push:
+                database.ref(action.path).push(action.values)
+                break
+              case ActionType.Remove:
+                database.ref(action.path).remove()
+                break
               case ActionType.Set:
-                database.ref(action.path).set(action.value)
+                database.ref(action.path).set(action.values)
                 break
               case ActionType.SignInWithEmailAndPassword:
                 auth.signInWithEmailAndPassword(action.email, action.password)
@@ -70,6 +93,9 @@ export function makeFirebaseDriver (options: Config, name: string) {
                 break
               case ActionType.SignOut:
                 auth.signOut().then(() => {}, err => listener.next(err))
+                break
+              case ActionType.Update:
+                database.ref(action.path).update(action.values)
                 break
             }
           }

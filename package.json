@@ -9,9 +9,6 @@
   "bugs": "https://github.com/joshforisha/cycle-firebase/issues",
   "license": "MIT",
   "author": "Josh Forisha <josh@forisha.com",
-  "files": [
-    "lib"
-  ],
   "main": "index.js",
   "repository": "https://github.com/joshforisha/cycle-firebase/tree/master",
   "scripts": {

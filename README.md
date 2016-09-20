@@ -2,8 +2,6 @@
 
 A [Firebase v3](https://firebase.google.com/) driver for [Cycle.js](http://cycle.js.org).
 
-`npm install --save @joshforisha/cycle-firebase`
-
 ## API
 
 * [`firebaseActions`](#firebaseActions)

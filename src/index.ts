@@ -8,6 +8,7 @@ enum ActionType {
   Set,
   SignInWithEmailAndPassword,
   SignOut,
+  Transaction,
   Update
 }
 
@@ -45,6 +46,11 @@ export const firebaseActions = {
   }),
   signOut: () => ({
     type: ActionType.SignOut
+  }),
+  transaction: (path: string, updateFn: (any => any)) => ({
+    path,
+    type: ActionType.Transaction,
+    updateFn
   }),
   update: (path: string, values: any) => ({
     path,
@@ -93,6 +99,9 @@ export function makeFirebaseDriver (options: Config, name: string) {
                 break
               case ActionType.SignOut:
                 auth.signOut().then(() => {}, err => listener.next(err))
+                break
+              case ActionType.Transaction:
+                database.ref(action.path).transaction(action.updateFn)
                 break
               case ActionType.Update:
                 database.ref(action.path).update(action.values)

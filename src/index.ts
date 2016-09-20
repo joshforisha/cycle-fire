@@ -2,9 +2,9 @@ import xs from 'xstream'
 import { initializeApp } from 'firebase'
 
 enum ActionType {
-  CreateUser,
+  CreateUserWithEmailAndPassword,
   Set,
-  SignIn,
+  SignInWithEmailAndPassword,
   SignOut
 }
 
@@ -16,7 +16,7 @@ interface Config {
 }
 
 export const firebaseActions = {
-  createUser: (email: string, password: string) => ({
+  createUserWithEmailAndPassword: (email: string, password: string) => ({
     email,
     password,
     type: ActionType.CreateUser
@@ -26,7 +26,7 @@ export const firebaseActions = {
     type: ActionType.Set,
     value
   }),
-  signIn: (email: string, password: string) => ({
+  signInWithEmailAndPassword: (email: string, password: string) => ({
     email,
     password,
     type: ActionType.SignIn
@@ -36,8 +36,8 @@ export const firebaseActions = {
   })
 }
 
-export function makeFirebaseDriver (config: Config) {
-  const app = initializeApp(config)
+export function makeFirebaseDriver (options: Config, name: string) {
+  const app = initializeApp(options, name)
   const auth = app.auth()
   const database = app.database()
 
@@ -57,14 +57,14 @@ export function makeFirebaseDriver (config: Config) {
           error: err => console.error('Firebase sink error:', err),
           next: action => {
             switch (action.type) {
-              case ActionType.CreateUser:
+              case ActionType.CreateUserWithEmailAndPassword:
                 auth.createUserWithEmailAndPassword(action.email, action.password)
                   .catch(err => listener.next(err))
                 break
               case ActionType.Set:
                 database.ref(action.path).set(action.value)
                 break
-              case ActionType.SignIn:
+              case ActionType.SignInWithEmailAndPassword:
                 auth.signInWithEmailAndPassword(action.email, action.password)
                   .catch(err => listener.next(err))
                 break

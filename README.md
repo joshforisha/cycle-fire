@@ -9,7 +9,7 @@ A [Firebase v3](https://firebase.google.com/) driver for [Cycle.js](http://cycle
 
 ### <a id="firebaseActions">firebaseActions</a>
 
-Any write effects to the connected Firebase database should be requested by calling an _action generator_&mdash;a function defined on the `firebaseActions` object&mdash;and passed to the `firebase` source.
+Any write effects to the connected Firebase database should be requested by calling an _action generator_&mdash;a function defined on the `firebaseActions` object&mdash;and passed to the `firebase` sink.
 
 The following action generators are defined:
 

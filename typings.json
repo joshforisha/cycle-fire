@@ -1,7 +1,7 @@
 {
   "name": "@joshforisha/cycle-firebase",
   "main": "lib/index.d.ts",
-  "globalDependencies": {
-    "es6-shim": "github:DefinitelyTyped/DefinitelyTyped/es6-shim/es6-shim.d.ts"
+  "dependencies": {
+    "firebase": "registry:npm/firebase#3.0.5+20160723033700"
   }
 }

@@ -17,7 +17,6 @@
     "firebase"
   ],
   "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
   "scripts": {
     "build": "webpack -p",
     "postinstall": "npm prune",

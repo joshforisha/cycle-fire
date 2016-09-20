@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "outDir": "lib/",
+    "outDir": "./",
     "preserveConstEnums": true,
     "sourceMap": true,
     "target": "es5"

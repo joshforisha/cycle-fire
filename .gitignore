@@ -1,3 +1,7 @@
-lib/
+# Compiled files
+index.js
+index.js.map
+
+# Dependencies
 node_modules/
 typings/

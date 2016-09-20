@@ -2,32 +2,28 @@
   "name": "@joshforisha/cycle-firebase",
   "version": "0.0.1",
   "description": "A Firebase v3 driver for Cycle.js",
-  "license": "MIT",
-  "homepage": "https://github.com/joshforisha/cycle-firebase",
-  "bugs": "https://github.com/joshforisha/cycle-firebase/issues",
-  "repository": "https://github.com/joshforisha/cycle-firebase/tree/master",
-  "contributors": [
-    {
-      "name": "Josh Forisha",
-      "email": "josh@forisha.com"
-    }
-  ],
   "keywords": [
     "cyclejs",
     "firebase"
   ],
-  "main": "lib/index.js",
+  "bugs": "https://github.com/joshforisha/cycle-firebase/issues",
+  "license": "MIT",
+  "author": "Josh Forisha <josh@forisha.com",
+  "files": [
+    "lib"
+  ],
+  "main": "index.js",
+  "repository": "https://github.com/joshforisha/cycle-firebase/tree/master",
   "scripts": {
-    "build": "webpack -p",
+    "compile": "tsc",
     "postinstall": "npm prune",
+    "precompile": "typings install",
     "test": "standardts src/**/*.ts"
   },
   "devDependencies": {
     "firebase": "^3.4.0",
     "standardts": "^0.1.4",
-    "ts-loader": "^0.8.2",
     "typescript": "^1.8.10",
-    "webpack": "^1.13.2",
     "xstream": "^6.3.0"
   },
   "peerDependencies": {

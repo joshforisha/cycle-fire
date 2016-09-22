@@ -112,9 +112,9 @@ export function makeFirebaseDriver (options: Config, name: string) {
       },
       stop: () => {}
     }),
-    get: path => xs.create({
+    get: (path, eventType) => xs.create({
       start: listener => {
-        return database.ref(path).on('value', snapshot => {
+        return database.ref(path).on(eventType, snapshot => {
           listener.next(snapshot.val())
         })
       },

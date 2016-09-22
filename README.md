@@ -162,13 +162,13 @@ function main ({ firebase }) {
 }
 ```
 
-#### <a id="get"></a> `get(path)`
+#### <a id="get"></a> `get(path, eventType)`
 
-Returns a stream of the ref's _value_ at `path`, by utilizing [`firebase.database.Reference.on('value')`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#on).
+Returns a stream of the ref's `eventType` values at `path`, by utilizing [`firebase.database.Reference.on()`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#on).
 
 ```js
 function main ({ firebase }) {
-  const testUser$ = firebase.get('users/test')
+  const testUser$ = firebase.get('users/test', 'value')
   testUser$.addListener({
     next: testUser => console.log('Test user value:', testUser),
     ...

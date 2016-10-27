@@ -1,4 +1,4 @@
-import xs from 'xstream'
+import { Stream } from 'xstream'
 import { initializeApp } from 'firebase'
 
 enum ActionType {
@@ -64,16 +64,16 @@ export function makeFirebaseDriver (options: Config, name: string) {
   const auth = app.auth()
   const database = app.database()
 
-  return output$ => ({
-    currentUser: xs.create({
+  return (output$: Stream<any>) => ({
+    currentUser: Stream.create({
       start: listener => {
-        app.auth().onAuthStateChanged(user => {
+        app.auth().onAuthStateChanged((user: any) => {
           listener.next(user)
         })
       },
       stop: () => {}
     }),
-    error: xs.create({
+    error: Stream.create({
       start: listener => {
         output$.addListener({
           complete: () => {},
@@ -112,7 +112,7 @@ export function makeFirebaseDriver (options: Config, name: string) {
       },
       stop: () => {}
     }),
-    get: (path, eventType) => xs.create({
+    get: (path: string, eventType: string) => Stream.create({
       start: listener => {
         return database.ref(path).on(eventType, snapshot => {
           listener.next(snapshot.val())

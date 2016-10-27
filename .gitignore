@@ -1,7 +1,4 @@
-# Compiled files
-index.js
-index.js.map
-
-# Dependencies
+lib/index.js
+lib/index.js.map
 node_modules/
-typings/
+npm-debug.log

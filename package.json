@@ -1,6 +1,6 @@
 {
   "name": "@joshforisha/cycle-firebase",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A Firebase v3 driver for Cycle.js",
   "keywords": [
     "cyclejs",
@@ -18,13 +18,13 @@
   },
   "devDependencies": {
     "@types/es6-promise": "0.0.32",
-    "firebase": "3.5.2",
+    "firebase": "^3.6",
     "standardts": "0.1.4",
-    "typescript": "2.0.6",
-    "xstream": "7.0.0"
+    "typescript": "^2.1",
+    "xstream": "^9.2"
   },
   "peerDependencies": {
     "firebase": "~3",
-    "xstream": "~7"
+    "xstream": "*"
   }
 }

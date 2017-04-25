@@ -1,5 +1,7 @@
+import 'firebase/auth'
+import 'firebase/database'
 import { Stream } from 'xstream'
-import { initializeApp } from 'firebase'
+import { initializeApp } from 'firebase/app'
 
 enum ActionType {
   CreateUserWithEmailAndPassword,

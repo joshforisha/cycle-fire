@@ -9,6 +9,7 @@ enum ActionType {
   Remove,
   Set,
   SignInWithEmailAndPassword,
+  SignInWithPopup,
   SignOut,
   Transaction,
   Update
@@ -46,6 +47,10 @@ export const firebaseActions = {
     password,
     type: ActionType.SignInWithEmailAndPassword
   }),
+  signInWithPopup: (provider: object) => ({
+    provider,
+    type: ActionType.SignInWithPopup,
+  }),
   signOut: () => ({
     type: ActionType.SignOut
   }),
@@ -69,7 +74,7 @@ export function makeFirebaseDriver (options: Config, name: string) {
   return (output$: Stream<any>) => ({
     currentUser: Stream.create({
       start: listener => {
-        app.auth().onAuthStateChanged((user: any) => {
+        auth.onAuthStateChanged((user: any) => {
           listener.next(user)
         })
       },
@@ -98,6 +103,9 @@ export function makeFirebaseDriver (options: Config, name: string) {
               case ActionType.SignInWithEmailAndPassword:
                 auth.signInWithEmailAndPassword(action.email, action.password)
                   .catch(err => listener.next(err))
+                break
+              case ActionType.SignInWithPopup:
+                auth.signInWithPopup(action.provider).catch(err => listener.next(err))
                 break
               case ActionType.SignOut:
                 auth.signOut().then(() => {}, err => listener.next(err))

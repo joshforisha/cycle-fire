@@ -1,19 +1,10 @@
 import 'firebase/auth'
 import 'firebase/database'
-import { Stream } from 'xstream'
-import { initializeApp } from 'firebase/app'
+import * as firebase from 'firebase/app'
+import Action, { ActionType, makeActionHandler } from './Action'
+import { Listener, Producer, Stream } from 'xstream'
 
-enum ActionType {
-  CreateUserWithEmailAndPassword,
-  Push,
-  Remove,
-  Set,
-  SignInWithEmailAndPassword,
-  SignInWithPopup,
-  SignOut,
-  Transaction,
-  Update
-}
+export { actions as firebaseActions } from './Action'
 
 interface Config {
   apiKey: string
@@ -22,113 +13,105 @@ interface Config {
   storageBucket: string
 }
 
-export const firebaseActions = {
-  createUserWithEmailAndPassword: (email: string, password: string) => ({
-    email,
-    password,
-    type: ActionType.CreateUserWithEmailAndPassword
-  }),
-  push: (path: string, values: any) => ({
-    path,
-    type: ActionType.Push,
-    values
-  }),
-  remove: (path: string) => ({
-    type: ActionType.Remove,
-    path
-  }),
-  set: (path: string, values: any) => ({
-    path,
-    type: ActionType.Set,
-    values
-  }),
-  signInWithEmailAndPassword: (email: string, password: string) => ({
-    email,
-    password,
-    type: ActionType.SignInWithEmailAndPassword
-  }),
-  signInWithPopup: (provider: object) => ({
-    provider,
-    type: ActionType.SignInWithPopup,
-  }),
-  signOut: () => ({
-    type: ActionType.SignOut
-  }),
-  transaction: (path: string, updateFn: (value: any) => any) => ({
-    path,
-    type: ActionType.Transaction,
-    updateFn
-  }),
-  update: (path: string, values: any) => ({
-    path,
-    type: ActionType.Update,
-    values
-  })
+interface DatabaseReference {
+  child: any
+  values: Stream<any>
+}
+
+function noop () {}
+
+const emptyListener: Listener<undefined> = {
+  complete: noop,
+  error: noop,
+  next: noop
 }
 
 export function makeFirebaseDriver (options: Config, name: string) {
-  const app = initializeApp(options, name)
+  const app = firebase.initializeApp(options, name)
   const auth = app.auth()
   const database = app.database()
 
-  return (output$: Stream<any>) => ({
-    currentUser: Stream.create({
-      start: listener => {
-        auth.onAuthStateChanged((user: any) => {
-          listener.next(user)
-        })
-      },
-      stop: () => {}
-    }),
-    error: Stream.create({
-      start: listener => {
-        output$.addListener({
-          complete: () => {},
-          error: err => console.error('Firebase sink error:', err),
-          next: action => {
-            switch (action.type) {
-              case ActionType.CreateUserWithEmailAndPassword:
-                auth.createUserWithEmailAndPassword(action.email, action.password)
-                  .catch(err => listener.next(err))
-                break
-              case ActionType.Push:
-                database.ref(action.path).push(action.values)
-                break
-              case ActionType.Remove:
-                database.ref(action.path).remove()
-                break
-              case ActionType.Set:
-                database.ref(action.path).set(action.values)
-                break
-              case ActionType.SignInWithEmailAndPassword:
-                auth.signInWithEmailAndPassword(action.email, action.password)
-                  .catch(err => listener.next(err))
-                break
-              case ActionType.SignInWithPopup:
-                auth.signInWithPopup(action.provider).catch(err => listener.next(err))
-                break
-              case ActionType.SignOut:
-                auth.signOut().then(() => {}, err => listener.next(err))
-                break
-              case ActionType.Transaction:
-                database.ref(action.path).transaction(action.updateFn)
-                break
-              case ActionType.Update:
-                database.ref(action.path).update(action.values)
-                break
-            }
-          }
-        })
-      },
-      stop: () => {}
-    }),
-    get: (path: string, eventType: string) => Stream.create({
-      start: listener => {
-        return database.ref(path).on(eventType, snapshot => {
+  return (action$: Stream<Action>) => {
+    function refEvent$ (path: string, eventType: string): Stream<any> {
+      return Stream.create({
+        start: listener => database.ref(path).on(eventType, snapshot => {
           listener.next(snapshot.val())
+        }),
+        stop: noop
+      })
+    }
+
+    let emitError: ((err?: object) => void) = noop
+    const error$ = Stream.create({
+      start: listener => {
+        emitError = (err: object) => {
+          listener.next(err)
+        }
+      },
+      stop: noop
+    })
+
+    const handleAction = makeActionHandler(auth, database, emitError)
+    const actionListener: Listener<Action> = {
+      complete: noop,
+      error: err => { console.error('Firebase sink error:', err) },
+      next: handleAction
+    }
+    action$.addListener(actionListener)
+
+    const source = {
+      auth: {
+        authStateChanges: Stream.create({
+          start: listener => {
+            auth.onAuthStateChanged(
+              (nextOrObserver: (object | Function)) => {
+                listener.next(nextOrObserver)
+              },
+              emitError,
+              () => { listener.complete() }
+            )
+          },
+          stop: noop
+        }),
+        idTokenChanges: Stream.create({
+          start: listener => {
+            auth.onIdTokenChanged(
+              (nextOrObserver: (object | Function)) => {
+                listener.next(nextOrObserver)
+              },
+              emitError,
+              () => { listener.complete() }
+            )
+          },
+          stop: noop
+        }),
+        providersForEmail: (email: string) => Stream.create({
+          start: listener => {
+            auth.fetchProvidersForEmail(email)
+              .then(providers => { listener.next(providers) })
+              .catch(emitError)
+          },
+          stop: noop
+        }),
+        redirectResults: Stream.create({
+          start: listener => {
+            auth.getRedirectResult()
+              .then(result => { listener.next(result) })
+              .catch(emitError)
+          },
+          stop: noop
         })
       },
-      stop: () => {}
-    })
-  })
+      database: {
+        ref: (path: string): DatabaseReference => ({
+          child: (childPath: string) =>
+            source.database.ref(`${path}/${childPath}`),
+          values: refEvent$(path, 'value')
+        })
+      },
+      error: error$
+    }
+
+    return source
+  }
 }

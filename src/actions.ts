@@ -2,7 +2,6 @@ import * as firebase from 'firebase'
 
 export enum ActionType {
   ApplyActionCode,
-  CheckActionCode,
   ConfirmPasswordReset,
   CreateUserWithEmailAndPassword,
   GoOffline,
@@ -11,6 +10,8 @@ export enum ActionType {
   Remove,
   SendPasswordResetEmail,
   Set,
+  SetPriority,
+  SetWithPriority,
   SignInAnonymously,
   SignInWithCredential,
   SignInWithCustomToken,
@@ -21,84 +22,181 @@ export enum ActionType {
   Update
 }
 
-interface Action {
+export interface Action {
   type: ActionType
   [propName: string]: any
 }
-export default Action
 
-export const actions = {
-  applyActionCode: (code: string) => ({
+export function applyActionCode (code: string) {
+  return {
     code,
     type: ActionType.ApplyActionCode
-  }),
-  checkActionCode: (code: string) => ({
-    code,
-    type: ActionType.CheckActionCode
-  }),
-  createUserWithEmailAndPassword: (email: string, password: string) => ({
+  }
+}
+
+export function createUserWithEmailAndPassword (
+  email: string,
+  password: string
+) {
+  return {
     email,
     password,
     type: ActionType.CreateUserWithEmailAndPassword
-  }),
-  goOffline: () => ({
+  }
+}
+
+export function goOffline () {
+  return {
     type: ActionType.GoOffline
-  }),
-  goOnline: () => ({
+  }
+}
+
+export function goOnline () {
+  return {
     type: ActionType.GoOnline
-  }),
-  push: (path: string, values: any) => ({
+  }
+}
+
+export function push (path: string, values: any) {
+  return {
     path,
     type: ActionType.Push,
     values
-  }),
-  remove: (path: string) => ({
+  }
+}
+
+export function remove (path: string) {
+  return {
     type: ActionType.Remove,
     path
-  }),
-  sendPasswordResetEmail: (email: string) => ({
+  }
+}
+
+export function sendPasswordResetEmail (email: string) {
+  return {
     email,
     type: ActionType.SendPasswordResetEmail
-  }),
-  set: (path: string, values: any) => ({
+  }
+}
+
+export function set (path: string, value: any) {
+  return {
     path,
     type: ActionType.Set,
-    values
-  }),
-  signInAnonymously: () => ({
+    value
+  }
+}
+
+export function setPriority (
+  path: string,
+  priority: (string | null | number)
+) {
+  return {
+    path,
+    priority,
+    type: ActionType.SetPriority
+  }
+}
+
+export function setWithPriority (
+  path: string,
+  newVal: any,
+  newPriority: (string | null | number)
+) {
+  return {
+    newPriority,
+    newVal,
+    path,
+    type: ActionType.SetWithPriority
+  }
+}
+
+export function signInAnonymously () {
+  return {
     type: ActionType.SignInAnonymously
-  }),
-  signInWithCredential: (credential: firebase.auth.AuthCredential) => ({
+  }
+}
+
+export function signInWithCredential (
+  credential: firebase.auth.AuthCredential
+) {
+  return {
     credential,
     type: ActionType.SignInWithCredential
-  }),
-  signInWithCustomToken: (token: string) => ({
+  }
+}
+
+export function signInWithCustomToken (token: string) {
+  return {
     token,
     type: ActionType.SignInWithCustomToken
-  }),
-  signInWithEmailAndPassword: (email: string, password: string) => ({
+  }
+}
+
+export function signInWithEmailAndPassword (
+  email: string,
+  password: string
+) {
+  return {
     email,
     password,
     type: ActionType.SignInWithEmailAndPassword
-  }),
-  signInWithPopup: (provider: firebase.auth.AuthProvider) => ({
+  }
+}
+
+export function signInWithPopup (provider: firebase.auth.AuthProvider) {
+  return {
     provider,
     type: ActionType.SignInWithPopup,
-  }),
-  signOut: () => ({
+  }
+}
+
+export function signOut () {
+  return {
     type: ActionType.SignOut
-  }),
-  transaction: (path: string, updateFn: (value: any) => any) => ({
+  }
+}
+
+export function transaction (
+  path: string,
+  transactionUpdate: (value: any) => any
+) {
+  return {
     path,
-    type: ActionType.Transaction,
-    updateFn
-  }),
-  update: (path: string, values: any) => ({
+    transactionUpdate,
+    type: ActionType.Transaction
+  }
+}
+
+export function update (path: string, values: any) {
+  return {
     path,
     type: ActionType.Update,
     values
-  })
+  }
 }
+
+const actions = {
+  applyActionCode,
+  createUserWithEmailAndPassword,
+  goOffline,
+  goOnline,
+  push,
+  remove,
+  sendPasswordResetEmail,
+  set,
+  setPriority,
+  setWithPriority,
+  signInAnonymously,
+  signInWithCredential,
+  signInWithCustomToken,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  transaction,
+  update
+}
+export default actions
 
 export function makeActionHandler (
   auth: firebase.auth.Auth,
@@ -109,10 +207,6 @@ export function makeActionHandler (
     switch (action.type) {
       case ActionType.ApplyActionCode:
         auth.applyActionCode(action.code)
-          .catch(emitError)
-        break
-      case ActionType.CheckActionCode:
-        auth.checkActionCode(action.code)
           .catch(emitError)
         break
       case ActionType.CreateUserWithEmailAndPassword:
@@ -127,16 +221,28 @@ export function makeActionHandler (
         break
       case ActionType.Push:
         database.ref(action.path).push(action.values)
+          .catch(emitError)
         break
       case ActionType.Remove:
         database.ref(action.path).remove()
+          .catch(emitError)
         break
       case ActionType.SendPasswordResetEmail:
         auth.sendPasswordResetEmail(action.email)
           .catch(emitError)
         break
       case ActionType.Set:
-        database.ref(action.path).set(action.values)
+        database.ref(action.path).set(action.value)
+          .catch(emitError)
+        break
+       case ActionType.SetPriority:
+         database.ref(action.path).setPriority(action.priority, () => {})
+           .catch(emitError)
+         break
+      case ActionType.SetWithPriority:
+        database.ref(action.path)
+          .setWithPriority(action.newVal, action.newPriority)
+          .catch(emitError)
         break
       case ActionType.SignInAnonymously:
         auth.signInAnonymously()
@@ -163,11 +269,12 @@ export function makeActionHandler (
           .catch(emitError)
         break
       case ActionType.Transaction:
-        database.ref(action.path).transaction(action.updateFn)
+        database.ref(action.path).transaction(action.transactionUpdate)
           .catch(emitError)
         break
       case ActionType.Update:
         database.ref(action.path).update(action.values)
+          .catch(emitError)
         break
       default:
         console.warn('Unhandled Firebase action:', action)

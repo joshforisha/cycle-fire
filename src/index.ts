@@ -1,10 +1,10 @@
 import 'firebase/auth'
 import 'firebase/database'
 import * as firebase from 'firebase/app'
-import Action, { ActionType, makeActionHandler } from './Action'
+import actions, { Action, ActionType, makeActionHandler } from './actions'
 import { Listener, Producer, Stream } from 'xstream'
 
-export { actions as firebaseActions } from './Action'
+export const firebaseActions = actions
 
 interface Config {
   apiKey: string
@@ -109,7 +109,7 @@ export function makeFirebaseDriver (options: Config, name: string) {
           values: refEvent$(path, 'value')
         })
       },
-      error: error$
+      errors: error$
     }
 
     return source

@@ -100,14 +100,14 @@ export function setPriority (
 
 export function setWithPriority (
   path: string,
-  newVal: any,
-  newPriority: (string | null | number)
+  value: any,
+  priority: (string | null | number)
 ) {
   return {
-    newPriority,
-    newVal,
     path,
-    type: ActionType.SetWithPriority
+    priority,
+    type: ActionType.SetWithPriority,
+    value
   }
 }
 
@@ -241,7 +241,7 @@ export function makeActionHandler (
          break
       case ActionType.SetWithPriority:
         database.ref(action.path)
-          .setWithPriority(action.newVal, action.newPriority)
+          .setWithPriority(action.value, action.priority)
           .catch(emitError)
         break
       case ActionType.SignInAnonymously:

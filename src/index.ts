@@ -1,6 +1,7 @@
+import 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
-import * as firebase from 'firebase/app'
+import * as firebase from 'firebase'
 import actions, { Action, ActionType, makeActionHandler } from './actions'
 import { Listener, Producer, Stream } from 'xstream'
 
@@ -10,6 +11,8 @@ interface Config {
   apiKey: string
   authDomain: string
   databaseURL: string
+  messagingSenderId: string
+  projectId: string
   storageBucket: string
 }
 
@@ -17,8 +20,6 @@ interface DatabaseReference {
   child: any
   values: Stream<any>
 }
-
-function noop () {}
 
 const emptyListener: Listener<undefined> = {
   complete: noop,
@@ -115,3 +116,5 @@ export function makeFirebaseDriver (options: Config, name: string) {
     return source
   }
 }
+
+function noop () {}

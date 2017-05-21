@@ -70,24 +70,24 @@ The following action generators are defined:
 * [`transaction`](#firebaseActions.transaction)
 * [`update`](#firebaseActions.update)
 
-#### <a id="firebaseActions.applyActionCode"></a> `firebaseActions.applyActionCode (code)`
+#### <a id="firebaseActions.applyActionCode"></a> `firebaseActions.applyActionCode(code)`
 
 * `code: string`
 
 Triggers [`firebase.auth.Auth.applyActionCode()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#applyActionCode)
 
-#### <a id="firebaseActions.createUserWithEmailAndPassword"></a> `firebaseActions.createUserWithEmailAndPassword (email, password)`
+#### <a id="firebaseActions.createUserWithEmailAndPassword"></a> `firebaseActions.createUserWithEmailAndPassword(email, password)`
 
 * `email: string`
 * `password: string`
 
 Triggers [`firebase.auth.Auth.createUserWithEmailAndPassword()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#createUserWithEmailAndPassword).
 
-#### <a id="firebaseActions.goOffline"></a> `firebaseActions.goOffline ()`
+#### <a id="firebaseActions.goOffline"></a> `firebaseActions.goOffline()`
 
 Triggers [`firebase.database.Database.goOffline()`](https://firebase.google.com/docs/reference/js/firebase.database.Database.goOffline).
 
-#### <a id="firebaseActions.goOnline"></a> `firebaseActions.goOnline ()`
+#### <a id="firebaseActions.goOnline"></a> `firebaseActions.goOnline()`
 
 Triggers [`firebase.database.Database.goOnline()`](https://firebase.google.com/docs/reference/js/firebase.database.Database.goOnline).
 
@@ -199,7 +199,7 @@ Initializes a connection to a Firebase database by calling [`firebase.initialize
 * [`database.ref()`](#database.ref)
 * [`errors`](#errors)
 
-#### <a id="auth.authStateChange"></a> `auth.authStateChange`
+#### <a id="auth.authStateChanges"></a> `auth.authStateChanges`
 
 A stream based on the output of [`firebase.auth.Auth.onAuthStateChanged()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onAuthStateChanged).
 
@@ -213,9 +213,9 @@ A stream based on the output of [`firebase.auth.Auth.onIdTokenChanged()`](https:
 
 Returns a stream based on the output of [`firebase.auth.Auth.fetchProvidersForEmail()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#fetchProvidersForEmail).
 
-#### <a id="auth.authStateChanges"></a> `auth.authStateChanges`
+#### <a id="auth.redirectResults"></a> `auth.redirectResults`
 
-A stream based on the output of [`firebase.auth.Auth.onAuthStateChanged()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onAuthStateChanged).
+A stream based on the output of [`firebase.auth.Auth.getRedirectResult()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult).
 
 #### <a id="database.ref"></a> `database.ref(path)`
 

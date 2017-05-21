@@ -1,6 +1,6 @@
 {
   "name": "@joshforisha/cycle-firebase",
-  "version": "1.0.0-pre.1",
+  "version": "1.0.0-rc.1",
   "description": "A Firebase driver for Cycle.js",
   "keywords": [
     "cyclejs",

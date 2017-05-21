@@ -36,7 +36,7 @@ export function makeFirebaseDriver (options: Config, name: string) {
     function refEvent$ (path: string, eventType: string): Stream<any> {
       return Stream.create({
         start: listener => database.ref(path).on(eventType, snapshot => {
-          listener.next(snapshot.val())
+          if (snapshot !== null) listener.next(snapshot.val())
         }),
         stop: noop
       })

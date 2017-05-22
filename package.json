@@ -1,6 +1,6 @@
 {
   "name": "@joshforisha/cycle-firebase",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "description": "A Firebase driver for Cycle.js",
   "keywords": [
     "cyclejs",
@@ -13,7 +13,6 @@
   "repository": "https://github.com/joshforisha/cycle-firebase/tree/master",
   "scripts": {
     "compile": "tsc",
-    "postinstall": "npm prune",
     "test": "standardts src/**/*.ts"
   },
   "devDependencies": {
@@ -24,6 +23,6 @@
   },
   "peerDependencies": {
     "firebase": "~4",
-    "xstream": "*"
+    "xstream": "~10"
   }
 }

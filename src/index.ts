@@ -27,8 +27,8 @@ const emptyListener: Listener<undefined> = {
   next: noop
 }
 
-export function makeFirebaseDriver (options: Config, name: string) {
-  const app = firebase.initializeApp(options, name)
+export function makeFirebaseDriver (config: Config, name: string) {
+  const app = firebase.initializeApp(config, name)
   const auth = app.auth()
   const database = app.database()
 

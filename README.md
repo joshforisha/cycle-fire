@@ -50,134 +50,25 @@ Write effects to the connected Firebase database are requested by calling an _ac
 
 The following action generators are defined:
 
-* [`applyActionCode`](#firebaseActions.applyActionCode)
-* [`confirmPasswordReset`](#firebaseActions.confirmPasswordReset)
-* [`createUserWithEmailAndPassword`](#firebaseActions.createUserWithEmailAndPassword)
-* [`goOffline`](#firebaseActions.goOffline)
-* [`goOnline`](#firebaseActions.goOnline)
-* [`push`](#firebaseActions.push)
-* [`remove`](#firebaseActions.remove)
-* [`sendPasswordResetEmail`](#firebaseActions.sendPasswordResetEmail)
-* [`setPriority`](#firebaseActions.setPriority)
-* [`setWithPriority`](#firebaseActions.setWithPriority)
-* [`set`](#firebaseActions.set)
-* [`signInAnonymously`](#firebaseActions.signInAnonymously)
-* [`signInWithCredential`](#firebaseActions.signInWithCredential)
-* [`signInWithCustomToken`](#firebaseActions.signInWithCustomToken)
-* [`signInWithEmailAndPassword`](#firebaseActions.signInWithEmailAndPassword)
-* [`signInWithPopup`](#firebaseActions.signInWithPopup)
-* [`signOut`](#firebaseActions.signOut)
-* [`transaction`](#firebaseActions.transaction)
-* [`update`](#firebaseActions.update)
-
-#### <a id="firebaseActions.applyActionCode"></a> `firebaseActions.applyActionCode(code)`
-
-* `code: string`
-
-Triggers [`firebase.auth.Auth.applyActionCode()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#applyActionCode)
-
-#### <a id="firebaseActions.createUserWithEmailAndPassword"></a> `firebaseActions.createUserWithEmailAndPassword(email, password)`
-
-* `email: string`
-* `password: string`
-
-Triggers [`firebase.auth.Auth.createUserWithEmailAndPassword()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#createUserWithEmailAndPassword).
-
-#### <a id="firebaseActions.goOffline"></a> `firebaseActions.goOffline()`
-
-Triggers [`firebase.database.Database.goOffline()`](https://firebase.google.com/docs/reference/js/firebase.database.Database.goOffline).
-
-#### <a id="firebaseActions.goOnline"></a> `firebaseActions.goOnline()`
-
-Triggers [`firebase.database.Database.goOnline()`](https://firebase.google.com/docs/reference/js/firebase.database.Database.goOnline).
-
-#### <a id="firebaseActions.push"></a> `firebaseActions.push(path, value)`
-
-* `path: string`
-* `value: any`
-
-Triggers [`firebase.database.Reference.push()`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#push) with `value` on the reference at `path`.
-
-#### <a id="firebaseActions.remove"></a> `firebaseActions.remove(path)`
-
-* `path: string`
-
-Triggers [`firebase.database.Reference.remove()`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#remove) on the reference at `path`.
-
-#### <a id="firebaseActions.sendPasswordResetEmail"></a> `firebaseActions.sendPasswordResetEmail(email)`
-
-* `email: string`
-
-Triggers [`firebase.auth.Auth.sendPasswordResetEmail()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#sendPasswordResetEmail) with `email`.
-
-#### <a id="firebaseActions.set"></a> `firebaseActions.set(path, value)`
-
-* `path: string`
-* `value: any`
-
-Triggers [`firebase.database.Reference.set()`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#set) with `value` on the reference at `path`.
-
-#### <a id="firebaseActions.setPriority"></a> `firebaseActions.setPriority(path, priority)`
-
-* `path: string`
-* `priority: (string | null | number)`
-
-Triggers [`firebase.database.Reference.setPriority()`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#setPriority) with `priority` on the reference at `path`.
-
-#### <a id="firebaseActions.setWithPriority"></a> `firebaseActions.setWithPriority(path, value, priority)`
-
-* `path: string`
-* `value: any`
-* `priority: (string | null | number)`
-
-Triggers [`firebase.database.Reference.setWithPriority()`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#setWithPriority) with `value` and `priority` on the reference at `path`.
-
-#### <a id="firebaseActions.signInAnonymously"></a> `firebaseActions.signInAnonymously()`
-
-Triggers [`firebase.auth.Auth.signInAnonymously()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInAnonymously).
-
-#### <a id="firebaseActions.signInWithCredential"></a> `firebaseActions.signInWithCredential(credential)`
-
-* `credential: firebase.auth.AuthCredential`
-
-Triggers [`firebase.auth.Auth.signInWithCredential`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithCredential) with `credential`.
-
-#### <a id="firebaseActions.signInWithCustomToken"></a> `firebaseActions.signInWithCustomToken(token)`
-
-* `token: string`
-
-Triggers [`firebase.auth.Auth.signInWithCustemToken`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithCustomToken) with `token`.
-
-#### <a id="firebaseActions.signInWithEmailAndPassword"></a> `firebaseActions.signInWithEmailAndPassword(email, password)`
-
-* `email: string`
-* `password: string`
-
-Triggers [`firebase.auth.Auth.signInWithEmailAndPassword()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithEmailAndPassword) with `email` and `password`.
-
-#### <a id="firebaseActions.signInWithPopup"></a> `firebaseActions.signInWithPopup(provider)`
-
-* `provider: firebase.auth.AuthProvider`
-
-Triggers [`firebase.auth.Auth.signInWithPopup()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithPopup) with `provider`.
-
-#### <a id="firebaseActions.signOut"></a> `firebaseActions.signOut()`
-
-Triggers [`firebase.auth.Auth.signOut()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signOut).
-
-#### <a id="firebaseActions.transaction"></a> `firebaseActions.transaction(path, updateFn)`
-
-* `path: string`
-* `transactionUpdate: (value: any) => any`
-
-Triggers [`firebase.database.Reference.transaction()`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#transaction). The `transactionUpdate` should accept and return a reference's value object.
-
-#### <a id="firebaseActions.update"></a> `firebaseActions.update(path, values)`
-
-* `path: string`
-* `values: any`
-
-Triggers [`firebase.database.Reference.update()`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#update) with `values` on the reference at `path`.
+* <a id="firebaseActions.applyActionCode"></a> `applyActionCode(code: string)` – triggers [`Auth.applyActionCode`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#applyActionCode)
+* <a id="firebaseActions.confirmPasswordReset"></a> `confirmPasswordReset(code: string, newPassword: string)` – triggers [`Auth.confirmPasswordReset`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#confirmPasswordReset)
+* <a id="firebaseActions.createUserWithEmailAndPassword"></a> `createUserWithEmailAndPassword(email: string, password: string)` – triggers [`Auth.createUserWithEmailAndPassword`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#createUserWithEmailAndPassword)
+* <a id="firebaseActions.goOffline"></a> `goOffline()` – triggers [`Database.goOffline`](https://firebase.google.com/docs/reference/js/firebase.database.Database#goOffline)
+* <a id="firebaseActions.goOnline"></a> `goOnline()` – triggers [`Database.goOnline`](https://firebase.google.com/docs/reference/js/firebase.database.Database#goOnline)
+* <a id="firebaseActions.push"></a> `push(path: string, value: any)` – triggers [`Reference.push`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#push)
+* <a id="firebaseActions.remove"></a> `remove(path: string)` – triggers [`Reference.remove`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#remove)
+* <a id="firebaseActions.sendPasswordResetEmail"></a> `sendPasswordResetEmail(email: string)` – triggers [`Auth.sendPasswordResetEmail`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#sendPasswordResetEmail)
+* <a id="firebaseActions.set"></a> `set(path: string, value: any)` – triggers [`Reference.set`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#set)
+* <a id="firebaseActions.setPriority"></a> `setPriority(path: string, priority: (string|null|number)` – triggers [`Reference.setPriority`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#setPriority)
+* <a id="firebaseActions.setWithPriority"></a> `setWithPriority(path: string, value: any, priority: (string|null|number)` – triggers [`Reference.setWithPriority`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#setWithPriority)
+* <a id="firebaseActions.signInAnonymously"></a> `signInAnonymously()` – triggers [`Auth.signInAnonymously`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInAnonymously)
+* <a id="firebaseActions.signInWithCredential"></a> `signInWithCredential(credential: AuthCredential)` – triggers [`Auth.signInWithCredential`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithCredential)
+* <a id="firebaseActions.signInWithCustomToken"></a> `signInWithCustomToken(token: string)` – triggers [`Auth.signInWithCustomToken`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithCustomToken)
+* <a id="firebaseActions.signInWithEmailAndPassword"></a> `signInWithEmailAndPassword(email: string, password: string)` – triggers [`Auth.signInWithEmailAndPassword`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithEmailAndPassword)
+* <a id="firebaseActions.signInWithPopup"></a> `signInWithPopup(provider: AuthProvider)` – triggers [`Auth.signInWithPopup`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithPopup)
+* <a id="firebaseActions.signOut"></a> `signOut()` – triggers [`Auth.signOut`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signOut)
+* <a id="firebaseActions.transaction"></a> `transaction(path: string, transactionUpdate: (value: any) => any` – triggers [`Reference.transaction`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#transaction)
+* <a id="firebaseActions.update"></a> `update(path: string, values: any)` – triggers [`Reference.update`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#update)
 
 ### <a id="makeFirebaseDriver"></a> `makeFirebaseDriver(config, name?)`
 
@@ -193,12 +84,12 @@ Triggers [`firebase.database.Reference.update()`](https://firebase.google.com/do
 Initializes a connection to a Firebase database by calling [`firebase.initializeApp()`](https://firebase.google.com/docs/reference/js/firebase#.initializeApp), returning a _source_ object containing the following:
 
 * `auth`
-  * <a id="source.auth.authStateChanges"></a> `authStateChanges` – a stream based on [`firebase.auth.Auth.onAuthStateChanged()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onAuthStateChanged)
-  * <a id="source.auth.idTokenChanges"></a> `idTokenChanges` – a stream based on [`firebase.auth.Auth.onIdTokenChanged()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onIdTokenChanged)
-  * <a id="source.auth.providersForEmail"></a> `providersForEmail(email: string)` – a stream based on the output of [`firebase.auth.Auth.fetchProvidersForEmail()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#fetchProvidersForEmail)
-  * <a id="source.auth.redirectResults"></a> `redirectResults` – a stream based on the output of [`firebase.auth.Auth.getRedirectResult()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult)
+  * <a id="source.auth.authStateChanges"></a> `authStateChanges` – a stream based on [`Auth.onAuthStateChanged()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onAuthStateChanged)
+  * <a id="source.auth.idTokenChanges"></a> `idTokenChanges` – a stream based on [`Auth.onIdTokenChanged()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onIdTokenChanged)
+  * <a id="source.auth.providersForEmail"></a> `providersForEmail(email: string)` – a stream based on the output of [`Auth.fetchProvidersForEmail()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#fetchProvidersForEmail)
+  * <a id="source.auth.redirectResults"></a> `redirectResults` – a stream based on the output of [`Auth.getRedirectResult()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult)
 * `database`
   * <a id="source.database.ref"></a> `ref(path: string)` – returns an object containing:
     * <a id="source.database.ref.child"></a> `child(path: string)` – returns a child reference of this same object type
-    * <a id="source.database.ref.values"></a> `values` – a stream of the ref's values, utilizing [`firebase.database.Reference.on()`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#on) with `"value"`
+    * <a id="source.database.ref.values"></a> `values` – a stream of the ref's values, utilizing [`Reference.on('value')`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#on)
 * `errors` – a stream of errors generated by the defined [firebaseActions](#firebaseActions)

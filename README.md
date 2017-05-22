@@ -81,8 +81,8 @@ The following action generators are defined:
 Initializes a connection to a Firebase database by calling [`firebase.initializeApp()`](https://firebase.google.com/docs/reference/js/firebase#.initializeApp), returning a _source_ object containing the following:
 
 * `auth`
-  * <a id="source.auth.authState"></a> `authState` – a stream emitting values from [`Auth.onAuthStateChanged()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onAuthStateChanged)
-  * <a id="source.auth.idToken"></a> `idToken` – a stream emitting values from [`Auth.onIdTokenChanged()`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onIdTokenChanged)
+  * <a id="source.auth.authState"></a> `authState` – a stream emitting values from [`Auth.onAuthStateChanged`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onAuthStateChanged)
+  * <a id="source.auth.idToken"></a> `idToken` – a stream emitting values from [`Auth.onIdTokenChanged`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onIdTokenChanged)
   * <a id="source.auth.providersForEmail"></a> `providersForEmail(email: string)` – returns a stream emitting values from [`Auth.fetchProvidersForEmail`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#fetchProvidersForEmail)
   * <a id="source.auth.redirectResults"></a> `redirectResults` – a stream emitting values from [`Auth.getRedirectResult`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult)
 * `database`

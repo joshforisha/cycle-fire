@@ -62,7 +62,7 @@ export function makeFirebaseDriver (config: Config, name: string) {
 
     const source = {
       auth: {
-        authStateChanges: Stream.create({
+        authState: Stream.create({
           start: listener => {
             auth.onAuthStateChanged(
               (nextOrObserver: (object | Function)) => {
@@ -74,7 +74,7 @@ export function makeFirebaseDriver (config: Config, name: string) {
           },
           stop: noop
         }),
-        idTokenChanges: Stream.create({
+        idToken: Stream.create({
           start: listener => {
             auth.onIdTokenChanged(
               (nextOrObserver: (object | Function)) => {

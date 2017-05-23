@@ -21,9 +21,11 @@ enum ActionType {
   SignInWithEmailAndPassword,
   SignInWithPhoneNumber,
   SignInWithPopup,
+  SignInWithRedirect,
   SignOut,
   Transaction,
-  Update
+  Update,
+  VerifyPasswordResetCode
 }
 
 type Priority = (string | null | number)
@@ -103,6 +105,8 @@ export function makeActionHandler (app: firebase.app.App): ActionHandler {
         )
       case ActionType.SignInWithPopup:
         return Stream.fromPromise(auth.signInWithPopup(action.provider))
+      case ActionType.SignInWithRedirect:
+        return Stream.fromPromise(auth.signInWithRedirect(action.provider))
       case ActionType.SignOut:
         return Stream.fromPromise(auth.signOut())
       case ActionType.Transaction:
@@ -111,6 +115,8 @@ export function makeActionHandler (app: firebase.app.App): ActionHandler {
         )
       case ActionType.Update:
         return Stream.fromPromise(db.ref(action.refPath).update(action.values))
+      case ActionType.VerifyPasswordResetCode:
+        return Stream.fromPromise(auth.verifyPasswordResetCode(action.code))
       default:
         return Stream.empty()
     }
@@ -147,7 +153,11 @@ export const firebaseActions = {
     ) => action(ActionType.SignInWithPhoneNumber, { phoneNumber, verifier }),
     signInWithPopup: (provider: firebase.auth.AuthProvider) =>
       action(ActionType.SignInWithPopup, { provider }),
-    signOut: () => action(ActionType.SignOut)
+    signInWithRedirect: (provider: firebase.auth.AuthProvider) =>
+      action(ActionType.SignInWithRedirect, { provider }),
+    signOut: () => action(ActionType.SignOut),
+    verifyPasswordResetCode: (code: string) =>
+      action(ActionType.VerifyPasswordResetCode, { code })
   },
   database: {
     goOffline: () => action(ActionType.GoOffline),

@@ -59,7 +59,9 @@ Write effects to the connected Firebase database are requested by calling an _ac
     * <a id="firebaseActions.auth.signInWithEmailAndPassword"></a> `signInWithEmailAndPassword(email: string, password: string)` – triggers [`Auth.signInWithEmailAndPassword`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithEmailAndPassword)
     * <a id="firebaseActions.auth.signInWithPhoneNumber"></a> `signInWithPhoneNumber(phoneNumber: string, verifier: ApplicationVerifier)` – triggers [`Auth.signInWithPhoneNumber`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithPhoneNumber)
     * <a id="firebaseActions.auth.signInWithPopup"></a> `signInWithPopup(provider: AuthProvider)` – triggers [`Auth.signInWithPopup`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithPopup)
+    * <a id="firebaseActions.auth.signInWithRedirect"></a> `signInWithRedirect(provider: AuthProvider)` – triggers [`Auth.signInWithRedirect`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithRedirect)
     * <a id="firebaseActions.auth.signOut"></a> `signOut()` – triggers [`Auth.signOut`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signOut)
+    * <a id="firebaseActions.auth.verifyPasswordResetCode"></a> `verifyPasswordResetCode(code: string)` – triggers [`Auth.verifyPasswordResetCode`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#verifyPasswordResetCode)
   * `database: object` containing:
     * <a id="firebaseActions.database.goOffline"></a> `goOffline()` – triggers [`Database.goOffline`](https://firebase.google.com/docs/reference/js/firebase.database.Database#goOffline)
     * <a id="firebaseActions.database.goOnline"></a> `goOnline()` – triggers [`Database.goOnline`](https://firebase.google.com/docs/reference/js/firebase.database.Database#goOnline)

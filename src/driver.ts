@@ -119,6 +119,7 @@ export function makeFirebaseDriver (
         response$
           .filter(response => response.name === responseName)
           .map(response => response.stream)
+          .flatten()
       )
     }
 

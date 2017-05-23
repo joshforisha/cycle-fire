@@ -3,6 +3,7 @@ import { Stream } from 'xstream'
 
 enum ActionType {
   ApplyActionCode,
+  CheckActionCode,
   ConfirmPasswordReset,
   CreateUserWithEmailAndPassword,
   GoOffline,
@@ -50,6 +51,8 @@ export function makeActionHandler (app: firebase.app.App): ActionHandler {
     switch (action.type) {
       case ActionType.ApplyActionCode:
         return Stream.fromPromise(auth.applyActionCode(action.code))
+      case ActionType.CheckActionCode:
+        return Stream.fromPromise(auth.checkActionCode(action.code))
       case ActionType.ConfirmPasswordReset:
         return Stream.fromPromise(
           auth.confirmPasswordReset(action.code, action.newPassword)
@@ -110,6 +113,8 @@ export const firebaseActions = {
   auth: {
     applyActionCode: (code: string) =>
       action(ActionType.ApplyActionCode, { code }),
+    checkActionCode: (code: string) =>
+      action(ActionType.CheckActionCode, { code }),
     confirmPasswordReset: (code: string, newPassword: string) =>
       action(ActionType.ConfirmPasswordReset, { code, newPassword }),
     createUserWithEmailAndPassword: (email: string, password: string) =>

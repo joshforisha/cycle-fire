@@ -48,6 +48,7 @@ Write effects to the connected Firebase database are requested by calling an _ac
 * `firebaseActions: object` containing:
   * `auth: object` containing:
     * <a id="firebaseActions.auth.applyActionCode"></a> `applyActionCode(code: string)` – triggers [`Auth.applyActionCode`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#applyActionCode)
+    * <a id="firebaseActions.auth.checkActionCode"></a> `checkActionCode(code: string)` – triggers [`Auth.checkActionCode`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#checkActionCode)
     * <a id="firebaseActions.auth.confirmPasswordReset"></a> `confirmPasswordReset(code: string, newPassword: string)` – triggers [`Auth.confirmPasswordReset`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#confirmPasswordReset)
     * <a id="firebaseActions.auth.createUserWithEmailAndPassword"></a> `createUserWithEmailAndPassword(email: string, password: string)` – triggers [`Auth.createUserWithEmailAndPassword`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#createUserWithEmailAndPassword)
     * <a id="firebaseActions.auth.sendPasswordResetEmail"></a> `sendPasswordResetEmail(email: string)` – triggers [`Auth.sendPasswordResetEmail`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#sendPasswordResetEmail)

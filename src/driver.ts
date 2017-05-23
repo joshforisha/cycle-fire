@@ -57,9 +57,11 @@ export function makeFirebaseDriver (
         authState: Stream.create({
           start: listener => {
             auth.onAuthStateChanged(
-              listener.next,
-              listener.error,
-              listener.complete
+              (nextOrObserver: (Function | object)) => {
+                listener.next(nextOrObserver)
+              },
+              err => { listener.error(err) },
+              () => { listener.complete() }
             )
           },
           stop: () => {}
@@ -67,9 +69,11 @@ export function makeFirebaseDriver (
         idToken: Stream.create({
           start: listener => {
             auth.onIdTokenChanged(
-              listener.next,
-              listener.error,
-              listener.complete
+              (nextOrObserver: (Function | object)) => {
+                listener.next(nextOrObserver)
+              },
+              err => { listener.error(err) },
+              () => { listener.complete() }
             )
           },
           stop: () => {}
@@ -77,16 +81,16 @@ export function makeFirebaseDriver (
         providersForEmail: (email: string) => Stream.create({
           start: listener => {
             auth.fetchProvidersForEmail(email)
-              .catch(listener.next)
-              .then(listener.error)
+              .catch(err => { listener.error(err) })
+              .then(providers => { listener.next(providers) })
           },
           stop: () => {}
         }),
         redirectResult: Stream.create({
           start: listener => {
             auth.getRedirectResult()
-              .then(listener.next)
-              .catch(listener.error)
+              .catch(err => { listener.error(err) })
+              .then(result => { listener.next(result) })
           },
           stop: () => {}
         })

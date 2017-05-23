@@ -19,7 +19,7 @@ function main (sources) {
     .map(() => Math.ceil(Math.random() * 99))
     .map(firebaseActions.database.ref('test').set)
 
-  const vdom$ = sources.firebase.database.ref('test').values
+  const vdom$ = sources.firebase.database.ref('test').value
     .map(value =>
       div([
         h2(value),

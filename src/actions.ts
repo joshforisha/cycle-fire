@@ -1,6 +1,7 @@
 import * as firebase from 'firebase'
+import { Stream } from 'xstream'
 
-export enum ActionType {
+enum ActionType {
   ApplyActionCode,
   ConfirmPasswordReset,
   CreateUserWithEmailAndPassword,
@@ -22,262 +23,125 @@ export enum ActionType {
   Update
 }
 
+type Priority = (string | null | number)
+
 export interface Action {
+  as: (name: string) => Action
   type: ActionType
   [propName: string]: any
 }
 
-export function applyActionCode (code: string) {
-  return {
-    code,
-    type: ActionType.ApplyActionCode
-  }
+export type ActionHandler = ((action: Action) => Stream<any>)
+
+export type UpdateFn = ((value: any) => any)
+
+function action (type: ActionType, props: object = {}): Action {
+  return Object.assign({
+    as: (name: string) => action(type, Object.assign({}, props, { name })),
+    type
+  }, props)
 }
 
-export function createUserWithEmailAndPassword (
-  email: string,
-  password: string
-) {
-  return {
-    email,
-    password,
-    type: ActionType.CreateUserWithEmailAndPassword
-  }
-}
+export function makeActionHandler (app: firebase.app.App): ActionHandler {
+  const auth = app.auth()
+  const db = app.database()
 
-export function goOffline () {
-  return {
-    type: ActionType.GoOffline
-  }
-}
-
-export function goOnline () {
-  return {
-    type: ActionType.GoOnline
-  }
-}
-
-export function push (path: string, values: any) {
-  return {
-    path,
-    type: ActionType.Push,
-    values
-  }
-}
-
-export function remove (path: string) {
-  return {
-    type: ActionType.Remove,
-    path
-  }
-}
-
-export function sendPasswordResetEmail (email: string) {
-  return {
-    email,
-    type: ActionType.SendPasswordResetEmail
-  }
-}
-
-export function set (path: string, value: any) {
-  return {
-    path,
-    type: ActionType.Set,
-    value
-  }
-}
-
-export function setPriority (
-  path: string,
-  priority: (string | null | number)
-) {
-  return {
-    path,
-    priority,
-    type: ActionType.SetPriority
-  }
-}
-
-export function setWithPriority (
-  path: string,
-  value: any,
-  priority: (string | null | number)
-) {
-  return {
-    path,
-    priority,
-    type: ActionType.SetWithPriority,
-    value
-  }
-}
-
-export function signInAnonymously () {
-  return {
-    type: ActionType.SignInAnonymously
-  }
-}
-
-export function signInWithCredential (
-  credential: firebase.auth.AuthCredential
-) {
-  return {
-    credential,
-    type: ActionType.SignInWithCredential
-  }
-}
-
-export function signInWithCustomToken (token: string) {
-  return {
-    token,
-    type: ActionType.SignInWithCustomToken
-  }
-}
-
-export function signInWithEmailAndPassword (
-  email: string,
-  password: string
-) {
-  return {
-    email,
-    password,
-    type: ActionType.SignInWithEmailAndPassword
-  }
-}
-
-export function signInWithPopup (provider: firebase.auth.AuthProvider) {
-  return {
-    provider,
-    type: ActionType.SignInWithPopup,
-  }
-}
-
-export function signOut () {
-  return {
-    type: ActionType.SignOut
-  }
-}
-
-export function transaction (
-  path: string,
-  transactionUpdate: (value: any) => any
-) {
-  return {
-    path,
-    transactionUpdate,
-    type: ActionType.Transaction
-  }
-}
-
-export function update (path: string, values: any) {
-  return {
-    path,
-    type: ActionType.Update,
-    values
-  }
-}
-
-const actions = {
-  applyActionCode,
-  createUserWithEmailAndPassword,
-  goOffline,
-  goOnline,
-  push,
-  remove,
-  sendPasswordResetEmail,
-  set,
-  setPriority,
-  setWithPriority,
-  signInAnonymously,
-  signInWithCredential,
-  signInWithCustomToken,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  transaction,
-  update
-}
-export default actions
-
-export function makeActionHandler (
-  auth: firebase.auth.Auth,
-  database: firebase.database.Database,
-  emitError: ((err: any) => void)
-): ((action: Action) => void) {
-  return action => {
+  function handleAction (action: Action): Stream<any> {
     switch (action.type) {
       case ActionType.ApplyActionCode:
-        auth.applyActionCode(action.code)
-          .catch(emitError)
-        break
+        return Stream.fromPromise(auth.applyActionCode(action.code))
+      case ActionType.ConfirmPasswordReset:
+        return Stream.fromPromise(
+          auth.confirmPasswordReset(action.code, action.newPassword)
+        )
       case ActionType.CreateUserWithEmailAndPassword:
-        auth.createUserWithEmailAndPassword(action.email, action.password)
-          .catch(emitError)
-        break
-      case ActionType.GoOffline:
-        database.goOffline()
-        break
-      case ActionType.GoOnline:
-        database.goOnline()
-        break
-      case ActionType.Push:
-        database.ref(action.path).push(action.values)
-          .catch(emitError)
-        break
-      case ActionType.Remove:
-        database.ref(action.path).remove()
-          .catch(emitError)
-        break
+        return Stream.fromPromise(
+          auth.createUserWithEmailAndPassword(action.email, action.password)
+        )
       case ActionType.SendPasswordResetEmail:
-        auth.sendPasswordResetEmail(action.email)
-          .catch(emitError)
-        break
-      case ActionType.Set:
-        database.ref(action.path).set(action.value)
-          .catch(emitError)
-        break
-       case ActionType.SetPriority:
-         database.ref(action.path).setPriority(action.priority, () => {})
-           .catch(emitError)
-         break
-      case ActionType.SetWithPriority:
-        database.ref(action.path)
-          .setWithPriority(action.value, action.priority)
-          .catch(emitError)
-        break
+        return Stream.fromPromise(auth.sendPasswordResetEmail(action.email))
       case ActionType.SignInAnonymously:
-        auth.signInAnonymously()
-          .catch(emitError)
-        break
+        return Stream.fromPromise(auth.signInAnonymously())
       case ActionType.SignInWithCredential:
-        auth.signInWithCredential(action.credential)
-          .catch(emitError)
-        break
+        return Stream.fromPromise(auth.signInWithCredential(action.credential))
       case ActionType.SignInWithCustomToken:
-        auth.signInWithCustomToken(action.token)
-          .catch(emitError)
-        break
+        return Stream.fromPromise(auth.signInWithCustomToken(action.token))
       case ActionType.SignInWithEmailAndPassword:
-        auth.signInWithEmailAndPassword(action.email, action.password)
-          .catch(emitError)
-        break
+        return Stream.fromPromise(
+          auth.signInWithEmailAndPassword(action.email, action.password)
+        )
       case ActionType.SignInWithPopup:
-        auth.signInWithPopup(action.provider)
-          .catch(emitError)
-        break
+        return Stream.fromPromise(auth.signInWithPopup(action.provider))
       case ActionType.SignOut:
-        auth.signOut()
-          .catch(emitError)
-        break
+        return Stream.fromPromise(auth.signOut())
+      case ActionType.GoOffline:
+        return Stream.fromPromise(db.goOffline())
+      case ActionType.GoOnline:
+        return Stream.fromPromise(db.goOnline())
+      case ActionType.Push:
+        return Stream.fromPromise(db.ref(action.refPath).push(action.value))
+      case ActionType.Remove:
+        return Stream.fromPromise(db.ref(action.refPath).remove())
+      case ActionType.Set:
+        return Stream.fromPromise(db.ref(action.refPath).set(action.value))
+      case ActionType.SetPriority:
+        return Stream.fromPromise(
+          db.ref(action.refPath).setPriority(action.priority, () => {})
+        )
+      case ActionType.SetWithPriority:
+        return Stream.fromPromise(
+          db.ref(action.refPath).setWithPriority(action.value, action.priority)
+        )
       case ActionType.Transaction:
-        database.ref(action.path).transaction(action.transactionUpdate)
-          .catch(emitError)
-        break
+        return Stream.fromPromise(
+          db.ref(action.refPath).transaction(action.updateFn)
+        )
       case ActionType.Update:
-        database.ref(action.path).update(action.values)
-          .catch(emitError)
-        break
+        return Stream.fromPromise(db.ref(action.refPath).update(action.values))
       default:
-        console.warn('Unhandled Firebase action:', action)
+        return Stream.empty()
     }
+  }
+
+  return handleAction
+}
+
+export const firebaseActions = {
+  auth: {
+    applyActionCode: (code: string) =>
+      action(ActionType.ApplyActionCode, { code }),
+    confirmPasswordReset: (code: string, newPassword: string) =>
+      action(ActionType.ConfirmPasswordReset, { code, newPassword }),
+    createUserWithEmailAndPassword: (email: string, password: string) =>
+      action(ActionType.CreateUserWithEmailAndPassword, { email, password }),
+    sendPasswordResetEmail: (email: string) =>
+      action(ActionType.SendPasswordResetEmail, { email }),
+    signInAnonymously: () => action(ActionType.SignInAnonymously),
+    signInWithCredential: (credential: firebase.auth.AuthCredential) =>
+      action(ActionType.SignInWithCredential, { credential }),
+    signInWithCustomToken: (token: string) =>
+      action(ActionType.SignInWithCustomToken, { token }),
+    signInWithEmailAndPassword: (email: string, password: string) =>
+      action(ActionType.SignInWithEmailAndPassword, { email, password }),
+    signInWithPopup: (provider: firebase.auth.AuthProvider) =>
+      action(ActionType.SignInWithPopup, { provider }),
+    signOut: () => action(ActionType.SignOut)
+  },
+  database: {
+    goOffline: () => action(ActionType.GoOffline),
+    goOnline: () => action(ActionType.GoOnline),
+    ref: (refPath: string) => ({
+      push: (value: any) => action(ActionType.Push, { refPath, value }),
+      remove: () => action(ActionType.Remove, { refPath }),
+      set: (value: any) => action(ActionType.Set, { refPath, value }),
+      setPriority: (priority: Priority) =>
+        action(ActionType.SetPriority, { priority, refPath }),
+      setWithPriority: (value: any, priority: Priority) =>
+        action(ActionType.SetWithPriority, { priority, refPath, value }),
+      transaction: (updateFn: UpdateFn) =>
+        action(ActionType.Transaction, { refPath, updateFn }),
+      update: (values: any) =>
+        action(ActionType.Update, { refPath, values })
+    })
   }
 }

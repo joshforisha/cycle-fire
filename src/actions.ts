@@ -14,10 +14,12 @@ enum ActionType {
   Set,
   SetPriority,
   SetWithPriority,
+  SignInAndRetrieveDataWithCredential,
   SignInAnonymously,
   SignInWithCredential,
   SignInWithCustomToken,
   SignInWithEmailAndPassword,
+  SignInWithPhoneNumber,
   SignInWithPopup,
   SignOut,
   Transaction,
@@ -61,22 +63,6 @@ export function makeActionHandler (app: firebase.app.App): ActionHandler {
         return Stream.fromPromise(
           auth.createUserWithEmailAndPassword(action.email, action.password)
         )
-      case ActionType.SendPasswordResetEmail:
-        return Stream.fromPromise(auth.sendPasswordResetEmail(action.email))
-      case ActionType.SignInAnonymously:
-        return Stream.fromPromise(auth.signInAnonymously())
-      case ActionType.SignInWithCredential:
-        return Stream.fromPromise(auth.signInWithCredential(action.credential))
-      case ActionType.SignInWithCustomToken:
-        return Stream.fromPromise(auth.signInWithCustomToken(action.token))
-      case ActionType.SignInWithEmailAndPassword:
-        return Stream.fromPromise(
-          auth.signInWithEmailAndPassword(action.email, action.password)
-        )
-      case ActionType.SignInWithPopup:
-        return Stream.fromPromise(auth.signInWithPopup(action.provider))
-      case ActionType.SignOut:
-        return Stream.fromPromise(auth.signOut())
       case ActionType.GoOffline:
         return Stream.fromPromise(db.goOffline())
       case ActionType.GoOnline:
@@ -85,6 +71,8 @@ export function makeActionHandler (app: firebase.app.App): ActionHandler {
         return Stream.fromPromise(db.ref(action.refPath).push(action.value))
       case ActionType.Remove:
         return Stream.fromPromise(db.ref(action.refPath).remove())
+      case ActionType.SendPasswordResetEmail:
+        return Stream.fromPromise(auth.sendPasswordResetEmail(action.email))
       case ActionType.Set:
         return Stream.fromPromise(db.ref(action.refPath).set(action.value))
       case ActionType.SetPriority:
@@ -95,6 +83,28 @@ export function makeActionHandler (app: firebase.app.App): ActionHandler {
         return Stream.fromPromise(
           db.ref(action.refPath).setWithPriority(action.value, action.priority)
         )
+      case ActionType.SignInAndRetrieveDataWithCredential:
+        return Stream.fromPromise(
+          auth.signInAndRetrieveDataWithCredential(action.credential)
+        )
+      case ActionType.SignInAnonymously:
+        return Stream.fromPromise(auth.signInAnonymously())
+      case ActionType.SignInWithCredential:
+        return Stream.fromPromise(auth.signInWithCredential(action.credential))
+      case ActionType.SignInWithCustomToken:
+        return Stream.fromPromise(auth.signInWithCustomToken(action.token))
+      case ActionType.SignInWithEmailAndPassword:
+        return Stream.fromPromise(
+          auth.signInWithEmailAndPassword(action.email, action.password)
+        )
+      case ActionType.SignInWithPhoneNumber:
+        return Stream.fromPromise(
+          auth.signInWithPhoneNumber(action.phoneNumber, action.verifier)
+        )
+      case ActionType.SignInWithPopup:
+        return Stream.fromPromise(auth.signInWithPopup(action.provider))
+      case ActionType.SignOut:
+        return Stream.fromPromise(auth.signOut())
       case ActionType.Transaction:
         return Stream.fromPromise(
           db.ref(action.refPath).transaction(action.updateFn)
@@ -121,6 +131,9 @@ export const firebaseActions = {
       action(ActionType.CreateUserWithEmailAndPassword, { email, password }),
     sendPasswordResetEmail: (email: string) =>
       action(ActionType.SendPasswordResetEmail, { email }),
+    signInAndRetrieveDataWithCredential: (
+      credential: firebase.auth.AuthCredential
+    ) => action(ActionType.SignInAndRetrieveDataWithCredential, { credential }),
     signInAnonymously: () => action(ActionType.SignInAnonymously),
     signInWithCredential: (credential: firebase.auth.AuthCredential) =>
       action(ActionType.SignInWithCredential, { credential }),
@@ -128,6 +141,10 @@ export const firebaseActions = {
       action(ActionType.SignInWithCustomToken, { token }),
     signInWithEmailAndPassword: (email: string, password: string) =>
       action(ActionType.SignInWithEmailAndPassword, { email, password }),
+    signInWithPhoneNumber: (
+      phoneNumber: string,
+      verifier: firebase.auth.ApplicationVerifier
+    ) => action(ActionType.SignInWithPhoneNumber, { phoneNumber, verifier }),
     signInWithPopup: (provider: firebase.auth.AuthProvider) =>
       action(ActionType.SignInWithPopup, { provider }),
     signOut: () => action(ActionType.SignOut)

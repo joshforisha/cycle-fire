@@ -119,6 +119,6 @@ Initializes a connection to a Firebase database by calling [`firebase.initialize
 * `database: object` containing:
   * <a id="source.database.ref"></a> `ref(path: string)` – returns an object containing:
     * <a id="source.database.ref.child"></a> `child(path: string)` – returns a child reference of this same object type
-    * <a id="source.database.ref.events"></a> `events(eventType: string)`` – a stream of the `ref`'s `eventType` events, utilizing [`Reference.on`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#on)
+    * <a id="source.database.ref.events"></a> `events(eventType: string)` – a stream of the `ref`'s `eventType` events, utilizing [`Reference.on`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#on)
     * <a id="source.database.ref.value"></a> `value` – a shortcut stream equivalent to `events('value')`
 * <a id="source.responses"></a> `responses(name: string)` – returns a stream of responses from action requests that were named using [`<action>.as()`](#firebaseAction-as).

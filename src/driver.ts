@@ -3,7 +3,7 @@ import 'firebase/auth'
 import 'firebase/database'
 import * as firebase from 'firebase'
 import { Action, makeActionHandler } from './actions'
-import { Listener, Stream } from 'xstream'
+import { Listener, MemoryStream, Stream } from 'xstream'
 
 export interface ActionResponse {
   name?: string
@@ -19,21 +19,56 @@ export interface FirebaseConfig {
   storageBucket: string
 }
 
-export interface FirebaseDatabaseSource {
-  ref: (path: string) => FirebaseReferenceSource
-}
-
-export interface FirebaseReferenceSource {
-  child: (path: string) => FirebaseReferenceSource
-  events: (eventType: string) => Stream<any>
-  value: Stream<any>
+interface ReferenceSource {
+  child: (path: string) => ReferenceSource
+  events: EventLookup
+  value: MemoryStream<any>
 }
 
 export interface FirebaseSource {
-  database: FirebaseDatabaseSource
+  auth: {
+    authState: MemoryStream<Function | firebase.User>
+    idToken: MemoryStream<Function | firebase.User>
+    providersForEmail: (email: string) => MemoryStream<string[]>
+    redirectResult: MemoryStream<firebase.auth.UserCredential>
+  }
+  database: {
+    ref: (path: string) => ReferenceSource
+  }
+  responses: (name: string) => Stream<any>
 }
 
+type EventLookup = (eventType: string) => MemoryStream<any>
+
 type FirebaseDriver = (action$: Stream<Action>) => FirebaseSource
+
+function refEvents (ref: firebase.database.Reference): EventLookup {
+  const makeCallback = (listener: Listener<any>) => (
+    (snapshot: firebase.database.DataSnapshot) => {
+      if (snapshot !== null) {
+        listener.next(snapshot.val())
+      }
+    }
+  )
+
+  return (eventType: string) => {
+    let callback: (
+      a: firebase.database.DataSnapshot | null,
+      b?: string | undefined
+    ) => any
+
+    return Stream.createWithMemory({
+      start: listener => {
+        callback = makeCallback(listener)
+        ref.on(eventType, callback)
+      },
+
+      stop: () => {
+        ref.off(eventType, callback)
+      }
+    })
+  }
+}
 
 export function makeFirebaseDriver (
   config: FirebaseConfig,
@@ -47,6 +82,7 @@ export function makeFirebaseDriver (
   function firebaseDriver (action$: Stream<Action>): FirebaseSource {
     const response$: Stream<ActionResponse> = action$
       .map(action => ({ name: action.name, stream: handleAction(action) }))
+
     response$.addListener({
       complete: () => {},
       error: () => {},
@@ -55,10 +91,10 @@ export function makeFirebaseDriver (
 
     const firebaseSource = {
       auth: {
-        authState: Stream.create({
-          start: listener => {
+        authState: Stream.createWithMemory({
+          start: (listener: Listener<Function | firebase.User>) => {
             auth.onAuthStateChanged(
-              (nextOrObserver: (Function | object)) => {
+              (nextOrObserver: (Function | firebase.User)) => {
                 listener.next(nextOrObserver)
               },
               err => { listener.error(err) },
@@ -67,10 +103,11 @@ export function makeFirebaseDriver (
           },
           stop: () => {}
         }),
-        idToken: Stream.create({
-          start: listener => {
+
+        idToken: Stream.createWithMemory({
+          start: (listener: Listener<Function | firebase.User>) => {
             auth.onIdTokenChanged(
-              (nextOrObserver: (Function | object)) => {
+              (nextOrObserver: (Function | firebase.User)) => {
                 listener.next(nextOrObserver)
               },
               err => { listener.error(err) },
@@ -79,16 +116,18 @@ export function makeFirebaseDriver (
           },
           stop: () => {}
         }),
-        providersForEmail: (email: string) => Stream.create({
-          start: listener => {
+
+        providersForEmail: (email: string) => Stream.createWithMemory({
+          start: (listener: Listener<string[]>) => {
             auth.fetchProvidersForEmail(email)
               .catch(err => { listener.error(err) })
               .then(providers => { listener.next(providers) })
           },
           stop: () => {}
         }),
-        redirectResult: Stream.create({
-          start: listener => {
+
+        redirectResult: Stream.createWithMemory({
+          start: (listener: Listener<firebase.auth.UserCredential>) => {
             auth.getRedirectResult()
               .catch(err => { listener.error(err) })
               .then(result => { listener.next(result) })
@@ -96,32 +135,11 @@ export function makeFirebaseDriver (
           stop: () => {}
         })
       },
+
       database: {
         ref: (path: string) => {
           const dbRef = db.ref(path)
-
-          function events (eventType: string): Stream<any> {
-            const makeCallback = (listener: Listener<any>) => (
-              (snapshot: firebase.database.DataSnapshot) => {
-                if (snapshot !== null) {
-                  listener.next(snapshot.val())
-                }
-              }
-            )
-            let callback: (
-              a: firebase.database.DataSnapshot | null,
-              b?: string | undefined
-            ) => any
-            return Stream.createWithMemory({
-              start: listener => {
-                callback = makeCallback(listener)
-                dbRef.on(eventType, callback)
-              },
-              stop: () => {
-                dbRef.off(eventType, callback)
-              }
-            })
-          }
+          const events: EventLookup = refEvents(dbRef)
 
           const reference = {
             child: (childPath: string) => {
@@ -135,6 +153,7 @@ export function makeFirebaseDriver (
           return reference
         }
       },
+
       responses: (responseName: string) => (
         response$
           .filter(response => response.name === responseName)

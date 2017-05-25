@@ -129,49 +129,71 @@ export const firebaseActions = {
   auth: {
     applyActionCode: (code: string) =>
       action(ActionType.ApplyActionCode, { code }),
+
     checkActionCode: (code: string) =>
       action(ActionType.CheckActionCode, { code }),
+
     confirmPasswordReset: (code: string, newPassword: string) =>
       action(ActionType.ConfirmPasswordReset, { code, newPassword }),
+
     createUserWithEmailAndPassword: (email: string, password: string) =>
       action(ActionType.CreateUserWithEmailAndPassword, { email, password }),
+
     sendPasswordResetEmail: (email: string) =>
       action(ActionType.SendPasswordResetEmail, { email }),
+
     signInAndRetrieveDataWithCredential: (
       credential: firebase.auth.AuthCredential
     ) => action(ActionType.SignInAndRetrieveDataWithCredential, { credential }),
+
     signInAnonymously: () => action(ActionType.SignInAnonymously),
+
     signInWithCredential: (credential: firebase.auth.AuthCredential) =>
       action(ActionType.SignInWithCredential, { credential }),
+
     signInWithCustomToken: (token: string) =>
       action(ActionType.SignInWithCustomToken, { token }),
+
     signInWithEmailAndPassword: (email: string, password: string) =>
       action(ActionType.SignInWithEmailAndPassword, { email, password }),
+
     signInWithPhoneNumber: (
       phoneNumber: string,
       verifier: firebase.auth.ApplicationVerifier
     ) => action(ActionType.SignInWithPhoneNumber, { phoneNumber, verifier }),
+
     signInWithPopup: (provider: firebase.auth.AuthProvider) =>
       action(ActionType.SignInWithPopup, { provider }),
+
     signInWithRedirect: (provider: firebase.auth.AuthProvider) =>
       action(ActionType.SignInWithRedirect, { provider }),
+
     signOut: () => action(ActionType.SignOut),
+
     verifyPasswordResetCode: (code: string) =>
       action(ActionType.VerifyPasswordResetCode, { code })
   },
   database: {
     goOffline: () => action(ActionType.GoOffline),
+
     goOnline: () => action(ActionType.GoOnline),
+
     ref: (refPath: string) => ({
       push: (value: any) => action(ActionType.Push, { refPath, value }),
+
       remove: () => action(ActionType.Remove, { refPath }),
+
       set: (value: any) => action(ActionType.Set, { refPath, value }),
+
       setPriority: (priority: Priority) =>
         action(ActionType.SetPriority, { priority, refPath }),
+
       setWithPriority: (value: any, priority: Priority) =>
         action(ActionType.SetWithPriority, { priority, refPath, value }),
+
       transaction: (updateFn: UpdateFn) =>
         action(ActionType.Transaction, { refPath, updateFn }),
+
       update: (values: any) =>
         action(ActionType.Update, { refPath, values })
     })

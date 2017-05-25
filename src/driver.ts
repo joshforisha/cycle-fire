@@ -112,7 +112,7 @@ export function makeFirebaseDriver (
               a: firebase.database.DataSnapshot | null,
               b?: string | undefined
             ) => any
-            return Stream.create({
+            return Stream.createWithMemory({
               start: listener => {
                 callback = makeCallback(listener)
                 dbRef.on(eventType, callback)

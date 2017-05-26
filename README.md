@@ -69,9 +69,9 @@ Write effects to the connected Firebase database are requested by calling an _ac
       * <a id="firebaseActions.database.ref.push"></a> `push(value: any)` – triggers [`Reference.push`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#push)
       * <a id="firebaseActions.database.ref.remove"></a> `remove()` – triggers [`Reference.remove`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#remove)
       * <a id="firebaseActions.database.ref.set"></a> `set(value: any)` – triggers [`Reference.set`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#set)
-      * <a id="firebaseActions.database.ref.setPriority"></a> `setPriority(priority: (string|null|number)` – triggers [`Reference.setPriority`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#setPriority)
-      * <a id="firebaseActions.database.ref.setWithPriority"></a> `setWithPriority(value: any, priority: (string|null|number)` – triggers [`Reference.setWithPriority`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#setWithPriority)
-      * <a id="firebaseActions.database.ref.transaction"></a> `transaction(updateFn: (value: any) => any` – triggers [`Reference.transaction`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#transaction)
+      * <a id="firebaseActions.database.ref.setPriority"></a> `setPriority(priority: (null|number|string))` – triggers [`Reference.setPriority`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#setPriority)
+      * <a id="firebaseActions.database.ref.setWithPriority"></a> `setWithPriority(value: any, priority: (null|number|string))` – triggers [`Reference.setWithPriority`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#setWithPriority)
+      * <a id="firebaseActions.database.ref.transaction"></a> `transaction(updateFn: (value: any) => any)` – triggers [`Reference.transaction`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#transaction)
       * <a id="firebaseActions.database.ref.update"></a> `update(values: any)` – triggers [`Reference.update`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#update)
 
 #### <a id="firebaseAction-as"></a> `<action>.as(name: string)`

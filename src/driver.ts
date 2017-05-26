@@ -27,8 +27,9 @@ interface ReferenceSource {
 
 export interface FirebaseSource {
   auth: {
-    authState: MemoryStream<Function | firebase.User>
-    idToken: MemoryStream<Function | firebase.User>
+    authState: MemoryStream<firebase.User | null>
+    currentUser: MemoryStream<firebase.User | null>
+    idToken: MemoryStream<firebase.User | null>
     providersForEmail: (email: string) => MemoryStream<string[]>
     redirectResult: MemoryStream<firebase.auth.UserCredential>
   }
@@ -92,10 +93,25 @@ export function makeFirebaseDriver (
     const firebaseSource = {
       auth: {
         authState: Stream.createWithMemory({
-          start: (listener: Listener<Function | firebase.User>) => {
+          start: (listener: Listener<firebase.User | null>) => {
             auth.onAuthStateChanged(
-              (nextOrObserver: (Function | firebase.User)) => {
-                listener.next(nextOrObserver)
+              (user: firebase.User) => { listener.next(user) },
+              err => { listener.error(err) },
+              () => { listener.complete() }
+            )
+          },
+          stop: () => {}
+        }),
+
+        currentUser: Stream.createWithMemory({
+          start: (listener: Listener<firebase.User | null>) => {
+            let currentUser: (firebase.User | null) = null
+            auth.onIdTokenChanged(
+              (_user: firebase.User) => {
+                if (auth.currentUser !== currentUser) {
+                  currentUser = auth.currentUser
+                  listener.next(currentUser)
+                }
               },
               err => { listener.error(err) },
               () => { listener.complete() }
@@ -105,11 +121,9 @@ export function makeFirebaseDriver (
         }),
 
         idToken: Stream.createWithMemory({
-          start: (listener: Listener<Function | firebase.User>) => {
+          start: (listener: Listener<firebase.User | null>) => {
             auth.onIdTokenChanged(
-              (nextOrObserver: (Function | firebase.User)) => {
-                listener.next(nextOrObserver)
-              },
+              (user: firebase.User) => { listener.next(user) },
               err => { listener.error(err) },
               () => { listener.complete() }
             )

@@ -113,6 +113,7 @@ Initializes a connection to a Firebase database by calling [`firebase.initialize
 
 * `auth: object` containing:
   * <a id="source.auth.authState"></a> `authState: MemoryStream` emitting values from [`Auth.onAuthStateChanged`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onAuthStateChanged)
+  * <a id="source.auth.currentUser"></a> `currentUser: MemoryStream` emitting __changed__ values of [`Auth.currentUser`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#currentUser) when triggered by [`Auth.onIdTokenChanged`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onIdTokenChanged)
   * <a id="source.auth.idToken"></a> `idToken: MemoryStream` emitting values from [`Auth.onIdTokenChanged`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onIdTokenChanged)
   * <a id="source.auth.providersForEmail"></a> `providersForEmail(email: string): MemoryStream` emitting values from [`Auth.fetchProvidersForEmail`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#fetchProvidersForEmail)
   * <a id="source.auth.redirectResult"></a> `redirectResult: MemoryStream` emitting values from [`Auth.getRedirectResult`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult)

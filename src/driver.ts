@@ -35,6 +35,7 @@ export interface FirebaseSource {
   }
   database: {
     ref: (path: string) => ReferenceSource
+    refFromURL: (url: string) => ReferenceSource
   }
   responses: (name: string) => Stream<any>
 }
@@ -42,34 +43,6 @@ export interface FirebaseSource {
 type EventLookup = (eventType: string) => MemoryStream<any>
 
 type FirebaseDriver = (action$: Stream<Action>) => FirebaseSource
-
-function refEvents (ref: firebase.database.Reference): EventLookup {
-  const makeCallback = (listener: Listener<any>) => (
-    (snapshot: firebase.database.DataSnapshot) => {
-      if (snapshot !== null) {
-        listener.next(snapshot.val())
-      }
-    }
-  )
-
-  return (eventType: string) => {
-    let callback: (
-      a: firebase.database.DataSnapshot | null,
-      b?: string | undefined
-    ) => any
-
-    return Stream.createWithMemory({
-      start: listener => {
-        callback = makeCallback(listener)
-        ref.on(eventType, callback)
-      },
-
-      stop: () => {
-        ref.off(eventType, callback)
-      }
-    })
-  }
-}
 
 export function makeFirebaseDriver (
   config: FirebaseConfig,
@@ -151,21 +124,9 @@ export function makeFirebaseDriver (
       },
 
       database: {
-        ref: (path: string) => {
-          const dbRef = db.ref(path)
-          const events: EventLookup = refEvents(dbRef)
+        ref: (path: string) => sourceReference(db.ref(path)),
 
-          const reference = {
-            child: (childPath: string) => {
-              const fullPath = [path, childPath].join('/').replace(/\/\//g, '')
-              return firebaseSource.database.ref(fullPath)
-            },
-            events: events,
-            value: events('value')
-          }
-
-          return reference
-        }
+        refFromURL: (url: string) => sourceReference(db.refFromURL(url))
       },
 
       responses: (responseName: string) => (
@@ -180,4 +141,44 @@ export function makeFirebaseDriver (
   }
 
   return firebaseDriver
+}
+
+function makeReferenceEventsCallback (
+  listener: Listener<any>
+): ((snapshot: firebase.database.DataSnapshot) => void) {
+  return (snapshot: firebase.database.DataSnapshot) => {
+    if (snapshot !== null) {
+      listener.next(snapshot.val())
+    }
+  }
+}
+
+function refEvents (ref: firebase.database.Reference): EventLookup {
+  return (eventType: string) => {
+    let callback: (
+      a: firebase.database.DataSnapshot | null,
+      b?: string | undefined
+    ) => any
+
+    return Stream.createWithMemory({
+      start: listener => {
+        callback = makeReferenceEventsCallback(listener)
+        ref.on(eventType, callback)
+      },
+
+      stop: () => {
+        ref.off(eventType, callback)
+      }
+    })
+  }
+}
+
+function sourceReference (dbRef: firebase.database.Reference): ReferenceSource {
+  const events: EventLookup = refEvents(dbRef)
+
+  return {
+    child: (path: string) => sourceReference(dbRef.child(path)),
+    events: events,
+    value: events('value')
+  }
 }

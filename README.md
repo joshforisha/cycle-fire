@@ -113,13 +113,14 @@ Initializes a connection to a Firebase database by calling [`firebase.initialize
 
 * `auth: object` containing:
   * <a id="source.auth.authState"></a> `authState: MemoryStream` emitting values from [`Auth.onAuthStateChanged`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onAuthStateChanged)
-  * <a id="source.auth.currentUser"></a> `currentUser: MemoryStream` emitting __changed__ values of [`Auth.currentUser`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#currentUser) when triggered by [`Auth.onIdTokenChanged`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onIdTokenChanged)
+  * <a id="source.auth.currentUser"></a> `currentUser: MemoryStream` emitting _changed_ values of [`Auth.currentUser`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#currentUser) when triggered by [`Auth.onIdTokenChanged`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onIdTokenChanged)
   * <a id="source.auth.idToken"></a> `idToken: MemoryStream` emitting values from [`Auth.onIdTokenChanged`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onIdTokenChanged)
   * <a id="source.auth.providersForEmail"></a> `providersForEmail(email: string): MemoryStream` emitting values from [`Auth.fetchProvidersForEmail`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#fetchProvidersForEmail)
   * <a id="source.auth.redirectResult"></a> `redirectResult: MemoryStream` emitting values from [`Auth.getRedirectResult`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult)
 * `database: object` containing:
-  * <a id="source.database.ref"></a> `ref(path: string): object` containing:
-    * <a id="source.database.ref.child"></a> `child(path: string): object` of this same reference object type
+  * <a id="source.database.ref"></a> `ref(path: string): ReferenceSource` containing:
+    * <a id="source.database.ref.child"></a> `child(path: string): ReferenceSource`
     * <a id="source.database.ref.events"></a> `events(eventType: string): MemoryStream` of the `ref`'s `eventType` events, using [`Reference.on`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#on)
     * <a id="source.database.ref.value"></a> `value: MemoryStream` – a shortcut stream equivalent to `events('value')`
+  * <a id="source.database.refFromURL"></a> `refFromURL(url: string): ReferenceSource`
 * <a id="source.responses"></a> `responses(name: string): Stream` of responses from action requests that were named using [`<action>.as()`](#firebaseAction-as).

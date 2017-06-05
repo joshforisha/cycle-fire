@@ -2,7 +2,7 @@
 
 [![build](https://img.shields.io/travis/joshforisha/cycle-firebase.svg)](https://travis-ci.org/joshforisha/cycle-firebase)
 [![npm](https://img.shields.io/npm/v/@joshforisha/cycle-firebase.svg)](https://www.npmjs.com/package/@joshforisha/cycle-firebase)
-[![firebase](https://img.shields.io/badge/firebase-v4-ba8baf.svg)](https://github.com/firebase/firebase-js-sdk/releases/tag/v4)
+[![firebase](https://img.shields.io/badge/firebase-v4.1-ba8baf.svg)](https://github.com/firebase/firebase-js-sdk/releases/tag/v4.1.0)
 
 A [Firebase](https://firebase.google.com/) driver for [Cycle.js](http://cycle.js.org).
 

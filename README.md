@@ -1,7 +1,7 @@
-# @joshforisha/cycle-firebase
+# cycle-fire
 
-[![build](https://img.shields.io/travis/joshforisha/cycle-firebase.svg)](https://travis-ci.org/joshforisha/cycle-firebase)
-[![npm](https://img.shields.io/npm/v/@joshforisha/cycle-firebase.svg)](https://www.npmjs.com/package/@joshforisha/cycle-firebase)
+[![build](https://img.shields.io/travis/joshforisha/cycle-fire.svg)](https://travis-ci.org/joshforisha/cycle-fire)
+[![npm](https://img.shields.io/npm/v/cycle-fire.svg)](https://www.npmjs.com/package/cycle-fire)
 [![firebase](https://img.shields.io/badge/firebase-v4.1-ba8baf.svg)](https://github.com/firebase/firebase-js-sdk/releases/tag/v4.1.0)
 
 A [Firebase](https://firebase.google.com/) driver for [Cycle.js](http://cycle.js.org).
@@ -11,7 +11,7 @@ A [Firebase](https://firebase.google.com/) driver for [Cycle.js](http://cycle.js
 ```js
 import firebaseConfig from './firebaseConfig'
 import { button, div, h2 } from '@cycle/dom'
-import { firebaseActions, makeFirebaseDriver } from '@joshforisha/cycle-firebase'
+import { firebaseActions, makeFirebaseDriver } from 'cycle-fire'
 import { run } from '@cycle/run'
 
 function main (sources) {
@@ -79,7 +79,7 @@ Write effects to the connected Firebase database are requested by calling an _ac
 Effectively attaches a `name` to the action's response stream, allowing for lookup using the source's [`responses()`](#source.responses).
 
 ```js
-import { firebaseActions } from '@joshforisha/cycle-firebase'
+import { firebaseActions } from 'cycle-fire'
 import xs from 'xstream'
 
 function Cycle (sources) {

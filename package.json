@@ -1,16 +1,16 @@
 {
-  "name": "@joshforisha/cycle-firebase",
+  "name": "cycle-fire",
   "version": "1.0.0",
   "description": "A Firebase driver for Cycle.js",
   "keywords": [
     "cyclejs",
     "firebase"
   ],
-  "bugs": "https://github.com/joshforisha/cycle-firebase/issues",
+  "bugs": "https://github.com/joshforisha/cycle-fire/issues",
   "license": "MIT",
   "author": "Josh Forisha <josh@forisha.com",
   "main": "lib/index.js",
-  "repository": "https://github.com/joshforisha/cycle-firebase/tree/master",
+  "repository": "https://github.com/joshforisha/cycle-fire/tree/master",
   "scripts": {
     "compile": "tsc",
     "test": "standardts src/**/*.ts"

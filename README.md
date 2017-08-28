@@ -2,41 +2,39 @@
 
 [![build](https://img.shields.io/travis/joshforisha/cycle-fire.svg)](https://travis-ci.org/joshforisha/cycle-fire)
 [![npm](https://img.shields.io/npm/v/cycle-fire.svg)](https://www.npmjs.com/package/cycle-fire)
-[![firebase](https://img.shields.io/badge/firebase-v4.1-ba8baf.svg)](https://github.com/firebase/firebase-js-sdk/releases/tag/v4.1.0)
+[![firebase](https://img.shields.io/badge/firebase-v4.3-ba8baf.svg)](https://github.com/firebase/firebase-js-sdk/releases/tag/v4.3.0)
 
 A [Firebase](https://firebase.google.com/) driver for [Cycle.js](http://cycle.js.org).
 
 ## Example
 
 ```js
-import firebaseConfig from './firebaseConfig'
-import { button, div, h2 } from '@cycle/dom'
-import { firebaseActions, makeFirebaseDriver } from 'cycle-fire'
-import { run } from '@cycle/run'
+import firebaseConfig from './firebaseConfig';
+import { button, div, h2, makeDOMDriver } from '@cycle/dom';
+import { firebaseActions, makeFirebaseDriver } from 'cycle-fire';
+import { run } from '@cycle/run';
 
-function main (sources) {
-  const action$ = sources.DOM.select('.shuffle').events('click')
+function main(sources) {
+  const action$ = sources.DOM
+    .select('.shuffle')
+    .events('click')
     .map(() => Math.ceil(Math.random() * 99))
-    .map(firebaseActions.database.ref('test').set)
+    .map(firebaseActions.database.ref('test').set);
 
-  const vdom$ = sources.firebase.database.ref('test').value
-    .map(value =>
-      div([
-        h2(value),
-        button('.shuffle', 'Shuffle')
-      ])
-    )
+  const vdom$ = sources.firebase.database
+    .ref('test')
+    .value.map(value => div([h2(value), button('.shuffle', 'Shuffle')]));
 
   return {
     DOM: vdom$,
     firebase: action$
-  }
+  };
 }
 
 run(main, {
   DOM: makeDOMDriver('Application'),
   firebase: makeFirebaseDriver(firebaseConfig)
-})
+});
 ```
 
 ## API
@@ -79,22 +77,27 @@ Write effects to the connected Firebase database are requested by calling an _ac
 Effectively attaches a `name` to the action's response stream, allowing for lookup using the source's [`responses()`](#source.responses).
 
 ```js
-import { firebaseActions } from 'cycle-fire'
-import xs from 'xstream'
+import { firebaseActions } from 'cycle-fire';
+import xs from 'xstream';
 
-function Cycle (sources) {
-  const setAction = firebaseActions.database.ref('test')
+function Cycle(sources) {
+  const setAction = firebaseActions.database
+    .ref('test')
     .set('newValue')
-    .as('setTestValue')
+    .as('setTestValue');
 
   sources.firebase.responses('setTestValue').addListener({
-    error: err => { console.error(err) },
-    next: response => { console.log(response) }
-  })
+    error: err => {
+      console.error(err);
+    },
+    next: response => {
+      console.log(response);
+    }
+  });
 
   return {
     firebase: xs.of(setAction)
-  }
+  };
 }
 ```
 

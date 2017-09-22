@@ -16,10 +16,10 @@
     "format": "prettier --parser typescript --single-quote --write 'src/**/*.ts'"
   },
   "dependencies": {
-    "firebase": "^4.3.0",
+    "firebase": "^4.4.0",
     "xstream": "^10.9.0"
   },
   "devDependencies": {
-    "typescript": "^2.5.1"
+    "typescript": "^2.5.2"
   }
 }

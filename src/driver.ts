@@ -2,7 +2,7 @@ import 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import * as firebase from 'firebase';
-import { Action, makeActionHandler } from './actions';
+import { FirebaseAction, makeActionHandler } from './actions';
 import { Listener, MemoryStream, Stream } from 'xstream';
 
 export interface ActionResponse {
@@ -42,7 +42,7 @@ export interface FirebaseSource {
 
 type EventLookup = (eventType: string) => MemoryStream<any>;
 
-type FirebaseDriver = (action$: Stream<Action>) => FirebaseSource;
+type FirebaseDriver = (action$: Stream<FirebaseAction>) => FirebaseSource;
 
 export function makeFirebaseDriver(
   config: FirebaseConfig,
@@ -53,7 +53,7 @@ export function makeFirebaseDriver(
   const db = app.database();
   const handleAction = makeActionHandler(app);
 
-  function firebaseDriver(action$: Stream<Action>): FirebaseSource {
+  function firebaseDriver(action$: Stream<FirebaseAction>): FirebaseSource {
     const response$: Stream<ActionResponse> = action$.map(action => ({
       name: action.name,
       stream: handleAction(action)

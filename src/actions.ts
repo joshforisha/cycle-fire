@@ -254,6 +254,8 @@ export const firebaseActions = {
 
     signOut: () => action(AuthActionType.SignOut),
 
+    useDeviceLanguage: () => action(AuthActionType.UseDeviceLanguage),
+
     user: (user: firebase.User) => ({
       unlink: () => action(UserActionType.Unlink, { user }),
 

@@ -3,7 +3,7 @@ import 'firebase/auth';
 import 'firebase/database';
 import * as firebase from 'firebase';
 import { FirebaseAction, makeActionHandler } from './actions';
-import { Listener, MemoryStream, Stream } from 'xstream';
+import xs, { Listener, MemoryStream, Stream } from 'xstream';
 
 export interface ActionResponse {
   name?: string;
@@ -155,10 +155,11 @@ export function makeFirebaseDriver(
       },
 
       responses: (responseName: string) =>
-        response$
-          .filter(response => response.name === responseName)
-          .map(response => response.stream)
-          .flatten()
+        xs.merge(
+          response$
+            .filter(response => response.name === responseName)
+            .map(response => response.stream)
+        )
     };
 
     return firebaseSource;

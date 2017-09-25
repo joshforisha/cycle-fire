@@ -67,11 +67,11 @@ export type ActionHandler = ((action: FirebaseAction) => Stream<any>);
 
 export type UpdateFn = ((value: any) => any);
 
-function action(type: ActionType, props: object = {}): FirebaseAction {
+function action(actionType: ActionType, props: object = {}): FirebaseAction {
   return Object.assign(
     {
-      as: (name: string) => action(type, Object.assign({}, props, { name })),
-      type
+      as: (name: string) => action(actionType, Object.assign({ name }, props)),
+      type: actionType
     },
     props
   );

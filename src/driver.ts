@@ -2,8 +2,8 @@ import 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import * as firebase from 'firebase';
-import { FirebaseAction, makeActionHandler } from './actions';
 import xs, { Listener, MemoryStream, Stream } from 'xstream';
+import { FirebaseAction, makeActionHandler } from './actions';
 
 export interface ActionResponse {
   name?: string;
@@ -150,16 +150,14 @@ export function makeFirebaseDriver(
 
       database: {
         ref: (path: string) => sourceReference(db.ref(path)),
-
         refFromURL: (url: string) => sourceReference(db.refFromURL(url))
       },
 
       responses: (responseName: string) =>
-        xs.merge(
-          response$
-            .filter(response => response.name === responseName)
-            .map(response => response.stream)
-        )
+        response$
+          .filter(response => response.name === responseName)
+          .map(response => response.stream)
+          .flatten()
     };
 
     return firebaseSource;

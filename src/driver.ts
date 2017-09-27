@@ -19,11 +19,17 @@ export interface FirebaseConfig {
   storageBucket: string;
 }
 
-interface ReferenceSource {
+export interface ReferenceSource {
   child: (path: string) => ReferenceSource;
   events: EventLookup;
   value: MemoryStream<any>;
 }
+
+export interface ResultStream {
+  action: FirebaseAction;
+}
+
+export type ResultMemoryStream = MemoryStream<any> & ResultStream;
 
 export interface FirebaseSource {
   auth: {
@@ -37,7 +43,7 @@ export interface FirebaseSource {
     ref: (path: string) => ReferenceSource;
     refFromURL: (url: string) => ReferenceSource;
   };
-  responses: (name: string) => Stream<any>;
+  select: (category: string) => Stream<any>;
 }
 
 type EventLookup = (eventType: string) => MemoryStream<any>;
@@ -46,20 +52,52 @@ type FirebaseDriver = (action$: Stream<FirebaseAction>) => FirebaseSource;
 
 export function makeFirebaseDriver(
   config: FirebaseConfig,
-  appName: string
+  appName?: string
 ): FirebaseDriver {
   const app = firebase.initializeApp(config, appName);
   const auth = app.auth();
   const db = app.database();
   const handleAction = makeActionHandler(app);
 
-  function firebaseDriver(action$: Stream<FirebaseAction>): FirebaseSource {
-    const response$: Stream<ActionResponse> = action$.map(action => ({
-      name: action.name,
-      stream: handleAction(action)
-    }));
+  function createResult$(action: FirebaseAction): ResultMemoryStream {
+    const result$ = Stream.createWithMemory({
+      start: listener => {
+        try {
+          const promise = handleAction(action);
+          promise
+            .catch(err => {
+              listener.error(err);
+            })
+            .then(result => {
+              listener.next(result);
+              listener.complete();
+            });
+        } catch (err) {
+          listener.error(err);
+        }
+      },
 
-    response$.addListener({});
+      stop: () => {}
+    });
+    Object.defineProperty(result$, 'action', {
+      value: action,
+      writable: false
+    });
+    result$.addListener({
+      complete: () => {},
+      error: () => {},
+      next: () => {}
+    });
+    return result$ as ResultMemoryStream;
+  }
+
+  function firebaseDriver(action$: Stream<FirebaseAction>): FirebaseSource {
+    const result$$ = action$.map(createResult$);
+    result$$.addListener({
+      complete: () => {},
+      error: () => {},
+      next: () => {}
+    });
 
     const firebaseSource = {
       auth: {
@@ -153,11 +191,14 @@ export function makeFirebaseDriver(
         refFromURL: (url: string) => sourceReference(db.refFromURL(url))
       },
 
-      responses: (responseName: string) =>
-        response$
-          .filter(response => response.name === responseName)
-          .map(response => response.stream)
-          .flatten()
+      select: (category: string) =>
+        typeof category === 'undefined'
+          ? result$$
+          : result$$.filter(
+              result$ =>
+                result$.hasOwnProperty('action') &&
+                result$.action.category === category
+            )
     };
 
     return firebaseSource;

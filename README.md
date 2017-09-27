@@ -79,9 +79,9 @@ Write effects to the connected Firebase database are requested by calling an _ac
       * <a id="firebaseActions.database.ref.transaction"></a> `transaction(updateFn: (value: any) => any)` – triggers [`Reference.transaction`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#transaction)
       * <a id="firebaseActions.database.ref.update"></a> `update(values: any)` – triggers [`Reference.update`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#update)
 
-#### <a id="firebaseAction-as"></a> `<action>.as(name: string)`
+#### <a id="firebaseAction-as"></a> `<action>.as(category: string)`
 
-Effectively attaches a `name` to the action's response stream, allowing for lookup using the source's [`responses()`](#source.responses).
+Effectively attaches a `category` to the action's result stream, allowing for lookup using the source's [`select()`](#source.select).
 
 ```js
 import { firebaseActions } from 'cycle-fire';
@@ -93,7 +93,7 @@ function Cycle(sources) {
     .set('newValue')
     .as('setTestValue');
 
-  sources.firebase.responses('setTestValue').addListener({
+  sources.firebase.select('setTestValue').addListener({
     error: err => {
       console.error(err);
     },
@@ -133,4 +133,4 @@ Initializes a connection to a Firebase database by calling [`firebase.initialize
     * <a id="source.database.ref.events"></a> `events(eventType: string): MemoryStream` of the `ref`'s `eventType` events, using [`Reference.on`](https://firebase.google.com/docs/reference/js/firebase.database.Reference#on)
     * <a id="source.database.ref.value"></a> `value: MemoryStream` – a shortcut stream equivalent to `events('value')`
   * <a id="source.database.refFromURL"></a> `refFromURL(url: string): ReferenceSource`
-* <a id="source.responses"></a> `responses(name: string): Stream` of responses from action requests that were named using [`<action>.as()`](#firebaseAction-as).
+* <a id="source.select"></a> `select(category: string): Stream` of results from action requests that were categorized using [`<action>.as()`](#firebaseAction-as).

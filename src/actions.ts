@@ -1,5 +1,4 @@
 import * as firebase from 'firebase';
-import { Stream } from 'xstream';
 
 enum AuthActionType {
   ApplyActionCode,
@@ -53,8 +52,8 @@ type ActionType =
 type Priority = null | number | string;
 
 export interface FirebaseAction {
-  as: (name: string) => FirebaseAction;
-  type: ActionType;
+  actionType: ActionType;
+  as: (category: string) => FirebaseAction;
   [propName: string]: any;
 }
 
@@ -63,140 +62,19 @@ export interface UserProfile {
   photoURL: null | string;
 }
 
-export type ActionHandler = ((action: FirebaseAction) => Stream<any>);
+export type ActionHandler = ((action: FirebaseAction) => firebase.Promise<any>);
 
 export type UpdateFn = ((value: any) => any);
 
 function action(actionType: ActionType, props: object = {}): FirebaseAction {
   return Object.assign(
     {
-      as: (name: string) => action(actionType, Object.assign({ name }, props)),
-      type: actionType
+      actionType,
+      as: (category: string) =>
+        action(actionType, Object.assign({ category }, props))
     },
     props
   );
-}
-
-export function makeActionHandler(app: firebase.app.App): ActionHandler {
-  const auth = app.auth();
-  const db = app.database();
-
-  function handleAction(action: FirebaseAction): Stream<any> {
-    switch (action.type) {
-      case AuthActionType.ApplyActionCode:
-        return Stream.fromPromise(auth.applyActionCode(action.code));
-
-      case AuthActionType.CheckActionCode:
-        return Stream.fromPromise(auth.checkActionCode(action.code));
-
-      case AuthActionType.ConfirmPasswordReset:
-        return Stream.fromPromise(
-          auth.confirmPasswordReset(action.code, action.newPassword)
-        );
-
-      case AuthActionType.CreateUserWithEmailAndPassword:
-        return Stream.fromPromise(
-          auth.createUserWithEmailAndPassword(action.email, action.password)
-        );
-
-      case AuthActionType.SendPasswordResetEmail:
-        return Stream.fromPromise(auth.sendPasswordResetEmail(action.email));
-
-      case AuthActionType.SetPersistence:
-        return Stream.fromPromise(auth.setPersistence(action.persistence));
-
-      case AuthActionType.SignInAndRetrieveDataWithCredential:
-        return Stream.fromPromise(
-          auth.signInAndRetrieveDataWithCredential(action.credential)
-        );
-
-      case AuthActionType.SignInAnonymously:
-        return Stream.fromPromise(auth.signInAnonymously());
-
-      case AuthActionType.SignInWithCredential:
-        return Stream.fromPromise(auth.signInWithCredential(action.credential));
-
-      case AuthActionType.SignInWithCustomToken:
-        return Stream.fromPromise(auth.signInWithCustomToken(action.token));
-
-      case AuthActionType.SignInWithEmailAndPassword:
-        return Stream.fromPromise(
-          auth.signInWithEmailAndPassword(action.email, action.password)
-        );
-
-      case AuthActionType.SignInWithPhoneNumber:
-        return Stream.fromPromise(
-          auth.signInWithPhoneNumber(action.phoneNumber, action.verifier)
-        );
-
-      case AuthActionType.SignInWithPopup:
-        return Stream.fromPromise(auth.signInWithPopup(action.provider));
-
-      case AuthActionType.SignInWithRedirect:
-        return Stream.fromPromise(auth.signInWithRedirect(action.provider));
-
-      case AuthActionType.SignOut:
-        return Stream.fromPromise(auth.signOut());
-
-      case AuthActionType.UseDeviceLanguage:
-        return Stream.fromPromise(auth.useDeviceLanguage());
-
-      case AuthActionType.VerifyPasswordResetCode:
-        return Stream.fromPromise(auth.verifyPasswordResetCode(action.code));
-
-      case DatabaseActionType.GoOffline:
-        return Stream.fromPromise(db.goOffline());
-
-      case DatabaseActionType.GoOnline:
-        return Stream.fromPromise(db.goOnline());
-
-      case ReferenceActionType.Push:
-        return Stream.fromPromise(db.ref(action.refPath).push(action.value));
-
-      case ReferenceActionType.Remove:
-        return Stream.fromPromise(db.ref(action.refPath).remove());
-
-      case ReferenceActionType.Set:
-        return Stream.fromPromise(db.ref(action.refPath).set(action.value));
-
-      case ReferenceActionType.SetPriority:
-        return Stream.fromPromise(
-          db.ref(action.refPath).setPriority(action.priority, () => null)
-        );
-
-      case ReferenceActionType.SetWithPriority:
-        return Stream.fromPromise(
-          db.ref(action.refPath).setWithPriority(action.value, action.priority)
-        );
-
-      case ReferenceActionType.Transaction:
-        return Stream.fromPromise(
-          db.ref(action.refPath).transaction(action.updateFn)
-        );
-
-      case ReferenceActionType.Update:
-        return Stream.fromPromise(db.ref(action.refPath).update(action.values));
-
-      case UserActionType.Unlink:
-        return Stream.fromPromise(action.user.unlink());
-
-      case UserActionType.UpdateEmail:
-        return Stream.fromPromise(action.user.updateEmail(action.email));
-
-      case UserActionType.UpdatePhoneNumber:
-        return Stream.fromPromise(
-          action.user.updatePhoneNumber(action.phoneNumber)
-        );
-
-      case UserActionType.UpdateProfile:
-        return Stream.fromPromise(action.user.updateProfile(action.profile));
-
-      default:
-        return Stream.empty();
-    }
-  }
-
-  return handleAction;
 }
 
 export const firebaseActions = {
@@ -307,3 +185,114 @@ export const firebaseActions = {
     })
   }
 };
+
+export function makeActionHandler(app: firebase.app.App): ActionHandler {
+  const auth = app.auth();
+  const db = app.database();
+
+  function handleAction(action: FirebaseAction): firebase.Promise<any> {
+    switch (action.actionType) {
+      case AuthActionType.ApplyActionCode:
+        return auth.applyActionCode(action.code);
+
+      case AuthActionType.CheckActionCode:
+        return auth.checkActionCode(action.code);
+
+      case AuthActionType.ConfirmPasswordReset:
+        return auth.confirmPasswordReset(action.code, action.newPassword);
+
+      case AuthActionType.CreateUserWithEmailAndPassword:
+        return auth.createUserWithEmailAndPassword(
+          action.email,
+          action.password
+        );
+
+      case AuthActionType.SendPasswordResetEmail:
+        return auth.sendPasswordResetEmail(action.email);
+
+      case AuthActionType.SetPersistence:
+        return auth.setPersistence(action.persistence);
+
+      case AuthActionType.SignInAndRetrieveDataWithCredential:
+        return auth.signInAndRetrieveDataWithCredential(action.credential);
+
+      case AuthActionType.SignInAnonymously:
+        return auth.signInAnonymously();
+
+      case AuthActionType.SignInWithCredential:
+        return auth.signInWithCredential(action.credential);
+
+      case AuthActionType.SignInWithCustomToken:
+        return auth.signInWithCustomToken(action.token);
+
+      case AuthActionType.SignInWithEmailAndPassword:
+        return auth.signInWithEmailAndPassword(action.email, action.password);
+
+      case AuthActionType.SignInWithPhoneNumber:
+        return auth.signInWithPhoneNumber(action.phoneNumber, action.verifier);
+
+      case AuthActionType.SignInWithPopup:
+        return auth.signInWithPopup(action.provider);
+
+      case AuthActionType.SignInWithRedirect:
+        return auth.signInWithRedirect(action.provider);
+
+      case AuthActionType.SignOut:
+        return auth.signOut();
+
+      case AuthActionType.UseDeviceLanguage:
+        return auth.useDeviceLanguage();
+
+      case AuthActionType.VerifyPasswordResetCode:
+        return auth.verifyPasswordResetCode(action.code);
+
+      case DatabaseActionType.GoOffline:
+        return db.goOffline();
+
+      case DatabaseActionType.GoOnline:
+        return db.goOnline();
+
+      case ReferenceActionType.Push:
+        return db.ref(action.refPath).push(action.value);
+
+      case ReferenceActionType.Remove:
+        return db.ref(action.refPath).remove();
+
+      case ReferenceActionType.Set:
+        return db.ref(action.refPath).set(action.value);
+
+      case ReferenceActionType.SetPriority:
+        return db.ref(action.refPath).setPriority(action.priority, () => null);
+
+      case ReferenceActionType.SetWithPriority:
+        return db
+          .ref(action.refPath)
+          .setWithPriority(action.value, action.priority);
+
+      case ReferenceActionType.Transaction:
+        return db.ref(action.refPath).transaction(action.updateFn);
+
+      case ReferenceActionType.Update:
+        return db.ref(action.refPath).update(action.values);
+
+      case UserActionType.Unlink:
+        return action.user.unlink();
+
+      case UserActionType.UpdateEmail:
+        return action.user.updateEmail(action.email);
+
+      case UserActionType.UpdatePhoneNumber:
+        return action.user.updatePhoneNumber(action.phoneNumber);
+
+      case UserActionType.UpdateProfile:
+        return action.user.updateProfile(action.profile);
+
+      default:
+        return new Promise((_resolve, reject) => {
+          reject(new Error('No matching action type'));
+        });
+    }
+  }
+
+  return handleAction;
+}

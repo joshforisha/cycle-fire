@@ -46,9 +46,9 @@ export interface FirebaseSource {
   select: (category: string) => Stream<any>;
 }
 
-type EventLookup = (eventType: string) => MemoryStream<any>;
+export type EventLookup = (eventType: string) => MemoryStream<any>;
 
-type FirebaseDriver = (action$: Stream<FirebaseAction>) => FirebaseSource;
+export type FirebaseDriver = (action$: Stream<FirebaseAction>) => FirebaseSource;
 
 export function makeFirebaseDriver(
   config: FirebaseConfig,

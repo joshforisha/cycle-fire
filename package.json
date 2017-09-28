@@ -1,6 +1,6 @@
 {
   "name": "cycle-fire",
-  "version": "2.0.0-rc.1",
+  "version": "2.0.0",
   "description": "A Firebase driver for Cycle.js",
   "keywords": [
     "cyclejs",
@@ -21,6 +21,6 @@
     "xstream": "^10.9.0"
   },
   "devDependencies": {
-    "typescript": "^2.5.2"
+    "typescript": "^2.5.3"
   }
 }

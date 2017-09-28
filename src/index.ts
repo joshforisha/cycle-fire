@@ -1,2 +1,2 @@
-export { firebaseActions, FirebaseAction } from './actions';
-export { makeFirebaseDriver, FirebaseConfig, FirebaseSource } from './driver';
+export { FirebaseAction, firebaseActions } from './actions';
+export { FirebaseConfig, FirebaseSource, makeFirebaseDriver } from './driver';

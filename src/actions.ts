@@ -1,6 +1,6 @@
 import * as firebase from 'firebase';
 
-enum AuthActionType {
+export enum AuthActionType {
   ApplyActionCode,
   CheckActionCode,
   ConfirmPasswordReset,
@@ -20,12 +20,12 @@ enum AuthActionType {
   VerifyPasswordResetCode
 }
 
-enum DatabaseActionType {
+export enum DatabaseActionType {
   GoOffline,
   GoOnline
 }
 
-enum ReferenceActionType {
+export enum ReferenceActionType {
   Push,
   Remove,
   Set,
@@ -35,7 +35,7 @@ enum ReferenceActionType {
   Update
 }
 
-enum UserActionType {
+export enum UserActionType {
   Unlink,
   UpdateEmail,
   UpdatePassword,
@@ -43,7 +43,7 @@ enum UserActionType {
   UpdateProfile
 }
 
-type ActionType =
+export type ActionType =
   | AuthActionType
   | DatabaseActionType
   | ReferenceActionType

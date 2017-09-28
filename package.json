@@ -10,6 +10,7 @@
   "license": "MIT",
   "author": "Josh Forisha <josh@forisha.com",
   "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "repository": "https://github.com/joshforisha/cycle-fire/tree/master",
   "scripts": {
     "compile": "tsc",

@@ -1,4 +1,8 @@
-import * as firebase from 'firebase';
+import {
+  User as FirebaseUser,
+  app as firebaseApp,
+  auth as firebaseAuth
+} from 'firebase';
 
 export enum AuthActionType {
   ApplyActionCode,
@@ -97,11 +101,11 @@ export const firebaseActions = {
     sendPasswordResetEmail: (email: string) =>
       action(AuthActionType.SendPasswordResetEmail, { email }),
 
-    setPersistence: (persistence: firebase.auth.Auth.Persistence) =>
+    setPersistence: (persistence: firebaseAuth.Auth.Persistence) =>
       action(AuthActionType.SetPersistence, { persistence }),
 
     signInAndRetrieveDataWithCredential: (
-      credential: firebase.auth.AuthCredential
+      credential: firebaseAuth.AuthCredential
     ) =>
       action(AuthActionType.SignInAndRetrieveDataWithCredential, {
         credential
@@ -109,7 +113,7 @@ export const firebaseActions = {
 
     signInAnonymously: () => action(AuthActionType.SignInAnonymously),
 
-    signInWithCredential: (credential: firebase.auth.AuthCredential) =>
+    signInWithCredential: (credential: firebaseAuth.AuthCredential) =>
       action(AuthActionType.SignInWithCredential, { credential }),
 
     signInWithCustomToken: (token: string) =>
@@ -120,21 +124,21 @@ export const firebaseActions = {
 
     signInWithPhoneNumber: (
       phoneNumber: string,
-      verifier: firebase.auth.ApplicationVerifier
+      verifier: firebaseAuth.ApplicationVerifier
     ) =>
       action(AuthActionType.SignInWithPhoneNumber, { phoneNumber, verifier }),
 
-    signInWithPopup: (provider: firebase.auth.AuthProvider) =>
+    signInWithPopup: (provider: firebaseAuth.AuthProvider) =>
       action(AuthActionType.SignInWithPopup, { provider }),
 
-    signInWithRedirect: (provider: firebase.auth.AuthProvider) =>
+    signInWithRedirect: (provider: firebaseAuth.AuthProvider) =>
       action(AuthActionType.SignInWithRedirect, { provider }),
 
     signOut: () => action(AuthActionType.SignOut),
 
     useDeviceLanguage: () => action(AuthActionType.UseDeviceLanguage),
 
-    user: (user: firebase.User) => ({
+    user: (user: FirebaseUser) => ({
       unlink: () => action(UserActionType.Unlink, { user }),
 
       updateEmail: (email: string) =>
@@ -186,7 +190,7 @@ export const firebaseActions = {
   }
 };
 
-export function makeActionHandler(app: firebase.app.App): ActionHandler {
+export function makeActionHandler(app: firebaseApp.App): ActionHandler {
   const auth = app.auth();
   const db = app.database();
 

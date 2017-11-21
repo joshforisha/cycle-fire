@@ -1,9 +1,14 @@
 import 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
-import * as firebase from 'firebase';
 import xs, { Listener, MemoryStream, Stream } from 'xstream';
 import { FirebaseAction, makeActionHandler } from './actions';
+import {
+  User as FirebaseUser,
+  auth as firebaseAuth,
+  database as firebaseDatabase,
+  initializeApp
+} from 'firebase';
 
 export interface ActionResponse {
   name?: string;
@@ -33,11 +38,11 @@ export type ResultMemoryStream = MemoryStream<any> & ResultStream;
 
 export interface FirebaseSource {
   auth: {
-    authState: MemoryStream<firebase.User | null>;
-    currentUser: MemoryStream<firebase.User | null>;
-    idToken: MemoryStream<firebase.User | null>;
+    authState: MemoryStream<FirebaseUser | null>;
+    currentUser: MemoryStream<FirebaseUser | null>;
+    idToken: MemoryStream<FirebaseUser | null>;
     providersForEmail: (email: string) => MemoryStream<string[]>;
-    redirectResult: MemoryStream<firebase.auth.UserCredential>;
+    redirectResult: MemoryStream<firebaseAuth.UserCredential>;
   };
   database: {
     ref: (path: string) => ReferenceSource;
@@ -56,7 +61,7 @@ export function makeFirebaseDriver(
   config: FirebaseConfig,
   appName?: string
 ): FirebaseDriver {
-  const app = firebase.initializeApp(config, appName);
+  const app = initializeApp(config, appName);
   const auth = app.auth();
   const db = app.database();
   const handleAction = makeActionHandler(app);
@@ -104,9 +109,9 @@ export function makeFirebaseDriver(
     const firebaseSource = {
       auth: {
         authState: Stream.createWithMemory({
-          start: (listener: Listener<firebase.User | null>) => {
+          start: (listener: Listener<FirebaseUser | null>) => {
             auth.onAuthStateChanged(
-              (user: firebase.User) => {
+              (user: FirebaseUser) => {
                 listener.next(user);
               },
               err => {
@@ -121,10 +126,10 @@ export function makeFirebaseDriver(
         }),
 
         currentUser: Stream.createWithMemory({
-          start: (listener: Listener<firebase.User | null>) => {
-            let currentUser: firebase.User | null = null;
+          start: (listener: Listener<FirebaseUser | null>) => {
+            let currentUser: FirebaseUser | null = null;
             auth.onIdTokenChanged(
-              (_user: firebase.User) => {
+              (_user: FirebaseUser) => {
                 if (auth.currentUser !== currentUser) {
                   currentUser = auth.currentUser;
                   listener.next(currentUser);
@@ -142,9 +147,9 @@ export function makeFirebaseDriver(
         }),
 
         idToken: Stream.createWithMemory({
-          start: (listener: Listener<firebase.User | null>) => {
+          start: (listener: Listener<FirebaseUser | null>) => {
             auth.onIdTokenChanged(
-              (user: firebase.User) => {
+              (user: FirebaseUser) => {
                 listener.next(user);
               },
               err => {
@@ -174,7 +179,7 @@ export function makeFirebaseDriver(
           }),
 
         redirectResult: Stream.createWithMemory({
-          start: (listener: Listener<firebase.auth.UserCredential>) => {
+          start: (listener: Listener<firebaseAuth.UserCredential>) => {
             auth
               .getRedirectResult()
               .catch(err => {
@@ -211,18 +216,18 @@ export function makeFirebaseDriver(
 
 function makeReferenceEventsCallback(
   listener: Listener<any>
-): (snapshot: firebase.database.DataSnapshot) => void {
-  return (snapshot: firebase.database.DataSnapshot) => {
+): (snapshot: firebaseDatabase.DataSnapshot) => void {
+  return (snapshot: firebaseDatabase.DataSnapshot) => {
     if (snapshot !== null) {
       listener.next(snapshot.val());
     }
   };
 }
 
-function refEvents(ref: firebase.database.Reference): EventLookup {
+function refEvents(ref: firebaseDatabase.Reference): EventLookup {
   return (eventType: string) => {
     let callback: (
-      a: firebase.database.DataSnapshot | null,
+      a: firebaseDatabase.DataSnapshot | null,
       b?: string | undefined
     ) => any;
 
@@ -239,7 +244,7 @@ function refEvents(ref: firebase.database.Reference): EventLookup {
   };
 }
 
-function sourceReference(dbRef: firebase.database.Reference): ReferenceSource {
+function sourceReference(dbRef: firebaseDatabase.Reference): ReferenceSource {
   const events: EventLookup = refEvents(dbRef);
 
   return {

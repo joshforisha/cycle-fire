@@ -62,7 +62,7 @@ export interface UserProfile {
   photoURL: null | string;
 }
 
-export type ActionHandler = ((action: FirebaseAction) => firebase.Promise<any>);
+export type ActionHandler = ((action: FirebaseAction) => Promise<any>);
 
 export type UpdateFn = ((value: any) => any);
 
@@ -190,7 +190,7 @@ export function makeActionHandler(app: firebase.app.App): ActionHandler {
   const auth = app.auth();
   const db = app.database();
 
-  function handleAction(action: FirebaseAction): firebase.Promise<any> {
+  function handleAction(action: FirebaseAction): Promise<any> {
     switch (action.actionType) {
       case AuthActionType.ApplyActionCode:
         return auth.applyActionCode(action.code);
@@ -253,7 +253,12 @@ export function makeActionHandler(app: firebase.app.App): ActionHandler {
         return db.goOnline();
 
       case ReferenceActionType.Push:
-        return db.ref(action.refPath).push(action.value);
+        return new Promise(resolve => {
+          db
+            .ref(action.refPath)
+            .push(action.value)
+            .then(value => resolve(value));
+        });
 
       case ReferenceActionType.Remove:
         return db.ref(action.refPath).remove();

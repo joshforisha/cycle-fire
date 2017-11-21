@@ -1,6 +1,6 @@
 {
   "name": "cycle-fire",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A Firebase driver for Cycle.js",
   "keywords": [
     "cyclejs",

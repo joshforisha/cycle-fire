@@ -1,4 +1,3 @@
-import 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import xs, { Listener, MemoryStream, Stream } from 'xstream';
@@ -8,7 +7,7 @@ import {
   auth as firebaseAuth,
   database as firebaseDatabase,
   initializeApp
-} from 'firebase';
+} from 'firebase/app';
 
 export interface ActionResponse {
   name?: string;

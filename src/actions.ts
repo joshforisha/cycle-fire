@@ -1,8 +1,10 @@
+import 'firebase/auth';
+import 'firebase/database';
 import {
   User as FirebaseUser,
   app as firebaseApp,
   auth as firebaseAuth
-} from 'firebase';
+} from 'firebase/app';
 
 export enum AuthActionType {
   ApplyActionCode,

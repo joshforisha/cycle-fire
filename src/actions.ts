@@ -260,10 +260,9 @@ export function makeActionHandler(app: firebaseApp.App): ActionHandler {
 
       case ReferenceActionType.Push:
         return new Promise(resolve => {
-          db
-            .ref(action.refPath)
-            .push(action.value)
-            .then(value => resolve(value));
+          const ref = db.ref(action.refPath).push();
+          ref.set(action.value);
+          ref.once('value', snapshot => resolve(snapshot.val()));
         });
 
       case ReferenceActionType.Remove:

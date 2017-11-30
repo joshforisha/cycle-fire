@@ -6,54 +6,39 @@ import {
   auth as firebaseAuth
 } from 'firebase/app';
 
-export enum AuthActionType {
-  ApplyActionCode,
-  CheckActionCode,
-  ConfirmPasswordReset,
-  CreateUserWithEmailAndPassword,
-  SendPasswordResetEmail,
-  SetPersistence,
-  SignInAndRetrieveDataWithCredential,
-  SignInAnonymously,
-  SignInWithCredential,
-  SignInWithCustomToken,
-  SignInWithEmailAndPassword,
-  SignInWithPhoneNumber,
-  SignInWithPopup,
-  SignInWithRedirect,
-  SignOut,
-  UseDeviceLanguage,
-  VerifyPasswordResetCode
+export enum ActionType {
+  AuthApplyActionCode,
+  AuthCheckActionCode,
+  AuthConfirmPasswordReset,
+  AuthCreateUserWithEmailAndPassword,
+  AuthSendPasswordResetEmail,
+  AuthSetPersistence,
+  AuthSignInAndRetrieveDataWithCredential,
+  AuthSignInAnonymously,
+  AuthSignInWithCredential,
+  AuthSignInWithCustomToken,
+  AuthSignInWithEmailAndPassword,
+  AuthSignInWithPhoneNumber,
+  AuthSignInWithPopup,
+  AuthSignInWithRedirect,
+  AuthSignOut,
+  AuthUseDeviceLanguage,
+  AuthVerifyPasswordResetCode,
+  DatabaseGoOffline,
+  DatabaseGoOnline,
+  ReferencePush,
+  ReferenceRemove,
+  ReferenceSet,
+  ReferenceSetPriority,
+  ReferenceSetWithPriority,
+  ReferenceTransaction,
+  ReferenceUpdate,
+  UserUnlink,
+  UserUpdateEmail,
+  UserUpdatePassword,
+  UserUpdatePhoneNumber,
+  UserUpdateProfile
 }
-
-export enum DatabaseActionType {
-  GoOffline,
-  GoOnline
-}
-
-export enum ReferenceActionType {
-  Push,
-  Remove,
-  Set,
-  SetPriority,
-  SetWithPriority,
-  Transaction,
-  Update
-}
-
-export enum UserActionType {
-  Unlink,
-  UpdateEmail,
-  UpdatePassword,
-  UpdatePhoneNumber,
-  UpdateProfile
-}
-
-export type ActionType =
-  | AuthActionType
-  | DatabaseActionType
-  | ReferenceActionType
-  | UserActionType;
 
 type Priority = null | number | string;
 
@@ -86,108 +71,108 @@ function action(actionType: ActionType, props: object = {}): FirebaseAction {
 export const firebaseActions = {
   auth: {
     applyActionCode: (code: string) =>
-      action(AuthActionType.ApplyActionCode, { code }),
+      action(ActionType.AuthApplyActionCode, { code }),
 
     checkActionCode: (code: string) =>
-      action(AuthActionType.CheckActionCode, { code }),
+      action(ActionType.AuthCheckActionCode, { code }),
 
     confirmPasswordReset: (code: string, newPassword: string) =>
-      action(AuthActionType.ConfirmPasswordReset, { code, newPassword }),
+      action(ActionType.AuthConfirmPasswordReset, { code, newPassword }),
 
     createUserWithEmailAndPassword: (email: string, password: string) =>
-      action(AuthActionType.CreateUserWithEmailAndPassword, {
+      action(ActionType.AuthCreateUserWithEmailAndPassword, {
         email,
         password
       }),
 
     sendPasswordResetEmail: (email: string) =>
-      action(AuthActionType.SendPasswordResetEmail, { email }),
+      action(ActionType.AuthSendPasswordResetEmail, { email }),
 
     setPersistence: (persistence: firebaseAuth.Auth.Persistence) =>
-      action(AuthActionType.SetPersistence, { persistence }),
+      action(ActionType.AuthSetPersistence, { persistence }),
 
     signInAndRetrieveDataWithCredential: (
       credential: firebaseAuth.AuthCredential
     ) =>
-      action(AuthActionType.SignInAndRetrieveDataWithCredential, {
+      action(ActionType.AuthSignInAndRetrieveDataWithCredential, {
         credential
       }),
 
-    signInAnonymously: () => action(AuthActionType.SignInAnonymously),
+    signInAnonymously: () => action(ActionType.AuthSignInAnonymously),
 
     signInWithCredential: (credential: firebaseAuth.AuthCredential) =>
-      action(AuthActionType.SignInWithCredential, { credential }),
+      action(ActionType.AuthSignInWithCredential, { credential }),
 
     signInWithCustomToken: (token: string) =>
-      action(AuthActionType.SignInWithCustomToken, { token }),
+      action(ActionType.AuthSignInWithCustomToken, { token }),
 
     signInWithEmailAndPassword: (email: string, password: string) =>
-      action(AuthActionType.SignInWithEmailAndPassword, { email, password }),
+      action(ActionType.AuthSignInWithEmailAndPassword, { email, password }),
 
     signInWithPhoneNumber: (
       phoneNumber: string,
       verifier: firebaseAuth.ApplicationVerifier
     ) =>
-      action(AuthActionType.SignInWithPhoneNumber, { phoneNumber, verifier }),
+      action(ActionType.AuthSignInWithPhoneNumber, { phoneNumber, verifier }),
 
     signInWithPopup: (provider: firebaseAuth.AuthProvider) =>
-      action(AuthActionType.SignInWithPopup, { provider }),
+      action(ActionType.AuthSignInWithPopup, { provider }),
 
     signInWithRedirect: (provider: firebaseAuth.AuthProvider) =>
-      action(AuthActionType.SignInWithRedirect, { provider }),
+      action(ActionType.AuthSignInWithRedirect, { provider }),
 
-    signOut: () => action(AuthActionType.SignOut),
+    signOut: () => action(ActionType.AuthSignOut),
 
-    useDeviceLanguage: () => action(AuthActionType.UseDeviceLanguage),
+    useDeviceLanguage: () => action(ActionType.AuthUseDeviceLanguage),
 
     user: (user: FirebaseUser) => ({
-      unlink: () => action(UserActionType.Unlink, { user }),
+      unlink: () => action(ActionType.UserUnlink, { user }),
 
       updateEmail: (email: string) =>
-        action(UserActionType.UpdateEmail, { email, user }),
+        action(ActionType.UserUpdateEmail, { email, user }),
 
       updatePassword: (password: string) =>
-        action(UserActionType.UpdatePassword, { password, user }),
+        action(ActionType.UserUpdatePassword, { password, user }),
 
       updatePhoneNumber: (phoneNumber: string) =>
-        action(UserActionType.UpdatePhoneNumber, { phoneNumber, user }),
+        action(ActionType.UserUpdatePhoneNumber, { phoneNumber, user }),
 
       updateProfile: (profile: UserProfile) =>
-        action(UserActionType.UpdateProfile, { profile, user })
+        action(ActionType.UserUpdateProfile, { profile, user })
     }),
 
     verifyPasswordResetCode: (code: string) =>
-      action(AuthActionType.VerifyPasswordResetCode, { code })
+      action(ActionType.AuthVerifyPasswordResetCode, { code })
   },
 
   database: {
-    goOffline: () => action(DatabaseActionType.GoOffline),
+    goOffline: () => action(ActionType.DatabaseGoOffline),
 
-    goOnline: () => action(DatabaseActionType.GoOnline),
+    goOnline: () => action(ActionType.DatabaseGoOnline),
 
     ref: (refPath: string) => ({
       push: (value: any) =>
-        action(ReferenceActionType.Push, { refPath, value }),
+        action(ActionType.ReferencePush, { refPath, value }),
 
-      remove: () => action(ReferenceActionType.Remove, { refPath }),
+      remove: () => action(ActionType.ReferenceRemove, { refPath }),
 
-      set: (value: any) => action(ReferenceActionType.Set, { refPath, value }),
+      set: (value: any) => action(ActionType.ReferenceSet, { refPath, value }),
 
       setPriority: (priority: Priority) =>
-        action(ReferenceActionType.SetPriority, { priority, refPath }),
+        action(ActionType.ReferenceSetPriority, { priority, refPath }),
 
       setWithPriority: (value: any, priority: Priority) =>
-        action(ReferenceActionType.SetWithPriority, {
+        action(ActionType.ReferenceSetWithPriority, {
           priority,
           refPath,
           value
         }),
 
       transaction: (updateFn: UpdateFn) =>
-        action(ReferenceActionType.Transaction, { refPath, updateFn }),
+        action(ActionType.ReferenceTransaction, { refPath, updateFn }),
 
       update: (values: any) =>
-        action(ReferenceActionType.Update, { refPath, values })
+        action(ActionType.ReferenceUpdate, { refPath, values })
     })
   }
 };
@@ -198,103 +183,104 @@ export function makeActionHandler(app: firebaseApp.App): ActionHandler {
 
   function handleAction(action: FirebaseAction): Promise<any> {
     switch (action.actionType) {
-      case AuthActionType.ApplyActionCode:
+      case ActionType.AuthApplyActionCode:
         return auth.applyActionCode(action.code);
 
-      case AuthActionType.CheckActionCode:
+      case ActionType.AuthCheckActionCode:
         return auth.checkActionCode(action.code);
 
-      case AuthActionType.ConfirmPasswordReset:
+      case ActionType.AuthConfirmPasswordReset:
         return auth.confirmPasswordReset(action.code, action.newPassword);
 
-      case AuthActionType.CreateUserWithEmailAndPassword:
+      case ActionType.AuthCreateUserWithEmailAndPassword:
         return auth.createUserWithEmailAndPassword(
           action.email,
           action.password
         );
 
-      case AuthActionType.SendPasswordResetEmail:
+      case ActionType.AuthSendPasswordResetEmail:
         return auth.sendPasswordResetEmail(action.email);
 
-      case AuthActionType.SetPersistence:
+      case ActionType.AuthSetPersistence:
         return auth.setPersistence(action.persistence);
 
-      case AuthActionType.SignInAndRetrieveDataWithCredential:
+      case ActionType.AuthSignInAndRetrieveDataWithCredential:
         return auth.signInAndRetrieveDataWithCredential(action.credential);
 
-      case AuthActionType.SignInAnonymously:
+      case ActionType.AuthSignInAnonymously:
         return auth.signInAnonymously();
 
-      case AuthActionType.SignInWithCredential:
+      case ActionType.AuthSignInWithCredential:
         return auth.signInWithCredential(action.credential);
 
-      case AuthActionType.SignInWithCustomToken:
+      case ActionType.AuthSignInWithCustomToken:
         return auth.signInWithCustomToken(action.token);
 
-      case AuthActionType.SignInWithEmailAndPassword:
+      case ActionType.AuthSignInWithEmailAndPassword:
         return auth.signInWithEmailAndPassword(action.email, action.password);
 
-      case AuthActionType.SignInWithPhoneNumber:
+      case ActionType.AuthSignInWithPhoneNumber:
         return auth.signInWithPhoneNumber(action.phoneNumber, action.verifier);
 
-      case AuthActionType.SignInWithPopup:
+      case ActionType.AuthSignInWithPopup:
         return auth.signInWithPopup(action.provider);
 
-      case AuthActionType.SignInWithRedirect:
+      case ActionType.AuthSignInWithRedirect:
         return auth.signInWithRedirect(action.provider);
 
-      case AuthActionType.SignOut:
+      case ActionType.AuthSignOut:
         return auth.signOut();
 
-      case AuthActionType.UseDeviceLanguage:
+      case ActionType.AuthUseDeviceLanguage:
         return auth.useDeviceLanguage();
 
-      case AuthActionType.VerifyPasswordResetCode:
+      case ActionType.AuthVerifyPasswordResetCode:
         return auth.verifyPasswordResetCode(action.code);
 
-      case DatabaseActionType.GoOffline:
+      case ActionType.DatabaseGoOffline:
         return db.goOffline();
 
-      case DatabaseActionType.GoOnline:
+      case ActionType.DatabaseGoOnline:
         return db.goOnline();
 
-      case ReferenceActionType.Push:
+      case ActionType.ReferencePush:
         return new Promise(resolve => {
-          const ref = db.ref(action.refPath).push();
-          ref.set(action.value);
-          ref.once('value', snapshot => resolve(snapshot.val()));
+          db
+            .ref(action.refPath)
+            .push(action.value)
+            .then(value => resolve(value));
         });
 
-      case ReferenceActionType.Remove:
+      case ActionType.ReferenceRemove:
         return db.ref(action.refPath).remove();
 
-      case ReferenceActionType.Set:
+      case ActionType.ReferenceSet:
         return db.ref(action.refPath).set(action.value);
 
-      case ReferenceActionType.SetPriority:
+      case ActionType.ReferenceSetPriority:
         return db.ref(action.refPath).setPriority(action.priority, () => null);
 
-      case ReferenceActionType.SetWithPriority:
+      case ActionType.ReferenceSetWithPriority:
         return db
           .ref(action.refPath)
           .setWithPriority(action.value, action.priority);
 
-      case ReferenceActionType.Transaction:
+      case ActionType.ReferenceTransaction:
         return db.ref(action.refPath).transaction(action.updateFn);
 
-      case ReferenceActionType.Update:
+      case ActionType.ReferenceUpdate:
         return db.ref(action.refPath).update(action.values);
 
-      case UserActionType.Unlink:
+      case ActionType.UserUnlink:
         return action.user.unlink();
 
-      case UserActionType.UpdateEmail:
+      case ActionType.UserUpdateEmail:
         return action.user.updateEmail(action.email);
 
-      case UserActionType.UpdatePhoneNumber:
+      case ActionType.UserUpdatePhoneNumber:
         return action.user.updatePhoneNumber(action.phoneNumber);
 
-      case UserActionType.UpdateProfile:
+      case ActionType.UserUpdateProfile:
         return action.user.updateProfile(action.profile);
 
       default:
